@@ -1390,10 +1390,31 @@
     const [commentName, setCommentName] = useState("");
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [replyTo, setReplyTo] = useState(null); // { id, name }
+    const [mentionQuery, setMentionQuery] = useState(null); // string after @
+    const [mentionPos, setMentionPos] = useState(0); // caret position where @ was typed
+    const inputRef = React.useRef(null);
+    const dropdownRef = React.useRef(null);
 
     const reactions = post.reactions || { like:[], haha:[], heart:[] };
     const myReact = uid ? (reactions.like?.includes(uid) ? "like" : reactions.haha?.includes(uid) ? "haha" : reactions.heart?.includes(uid) ? "heart" : null) : null;
     const lines = post.content?.split('\n') || [];
+
+    // All names available for mention (from comments, excluding admin)
+    const mentionableNames = React.useMemo(() => {
+      const seen = new Set();
+      return comments
+        .filter(c => !c.isAdmin && c.name)
+        .map(c => c.name)
+        .filter(n => { if (seen.has(n)) return false; seen.add(n); return true; });
+    }, [comments]);
+
+    // Filtered mention suggestions
+    const mentionSuggestions = React.useMemo(() => {
+      if (mentionQuery === null) return [];
+      const q = mentionQuery.toLowerCase();
+      return mentionableNames.filter(n => n.toLowerCase().startsWith(q));
+    }, [mentionQuery, mentionableNames]);
 
     useEffect(() => {
       if (!firebaseReady || !db) {
@@ -1411,6 +1432,68 @@
         }, () => setLoading(false));
       return () => unsub();
     }, [post.id]);
+
+    // Detect @ in textarea
+    const handleCommentInput = (e) => {
+      const val = e.target.value;
+      const cursor = e.target.selectionStart;
+      setCommentText(val);
+
+      // Find if cursor is right after an @ word
+      const textBefore = val.slice(0, cursor);
+      const match = textBefore.match(/@(\w*)$/);
+      if (match) {
+        setMentionQuery(match[1]);
+        setMentionPos(cursor - match[0].length);
+      } else {
+        setMentionQuery(null);
+      }
+    };
+
+    // Insert mention into text
+    const insertMention = (name) => {
+      const before = commentText.slice(0, mentionPos);
+      const after = commentText.slice(inputRef.current?.selectionStart || mentionPos + (mentionQuery?.length || 0) + 1);
+      const newText = before + "@" + name + " " + after;
+      setCommentText(newText);
+      setMentionQuery(null);
+      setTimeout(() => {
+        if (inputRef.current) {
+          const pos = before.length + name.length + 2;
+          inputRef.current.focus();
+          inputRef.current.setSelectionRange(pos, pos);
+        }
+      }, 0);
+    };
+
+    // Handle reply click
+    const handleReply = (c) => {
+      setReplyTo({ id: c.id, name: c.name });
+      const prefix = "@" + c.name + " ";
+      setCommentText(prefix);
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.setSelectionRange(prefix.length, prefix.length);
+        }
+      }, 50);
+    };
+
+    // Render comment text with @mentions highlighted in blue
+    const renderCommentText = (text) => {
+      if (!text) return null;
+      const parts = text.split(/(@\w+)/g);
+      return parts.map((part, i) => {
+        if (part.startsWith("@")) {
+          const mentioned = part.slice(1);
+          const exists = mentionableNames.includes(mentioned) || part === "@" + (post.isAdminPost ? "BHT" : "");
+          return (
+            <span key={i} style={{ color: "#2563eb", fontWeight:700 }}>{part}</span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      });
+    };
 
     const submitComment = async () => {
       const trimmedName = commentName.trim();
@@ -1431,33 +1514,27 @@
         name: trimmedName,
         text: trimmedText,
         uid: uid || null,
+        replyToId: replyTo?.id || null,
+        replyToName: replyTo?.name || null,
         timestamp: firebaseReady && db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
         isAdmin: false
       };
       if (firebaseReady && db) {
         await db.collection("posts").doc(post.id).collection("comments").add(data);
-        // Track commenter uid in post doc for future notifications
         const postUpdate = { commentCount: firebase.firestore.FieldValue.increment(1) };
         if (uid) postUpdate.commenterUids = firebase.firestore.FieldValue.arrayUnion(uid);
         await db.collection("posts").doc(post.id).update(postUpdate);
-
-        // ── Write notifications ──────────────────────────
         if (uid) {
           const commenterName = trimmedName;
-          const preview = commentText.trim().slice(0, 120);
+          const preview = trimmedText.slice(0, 120);
           const notifBase = {
-            type: "new_comment",
-            postId: post.id,
+            type: "new_comment", postId: post.id,
             postAuthorName: post.name || "Anonymous",
-            fromName: commenterName,
-            preview,
-            ts: firebase.firestore.FieldValue.serverTimestamp(),
-            read: false
+            fromName: commenterName, preview,
+            ts: firebase.firestore.FieldValue.serverTimestamp(), read: false
           };
           const toNotify = new Set();
-          // 1. Notify post author (if they're someone else)
           if (post.authorUid && post.authorUid !== uid) toNotify.add(post.authorUid);
-          // 2. Notify previous commenters on this post
           if (Array.isArray(post.commenterUids)) {
             post.commenterUids.forEach(cu => { if (cu && cu !== uid) toNotify.add(cu); });
           }
@@ -1468,7 +1545,7 @@
       } else {
         setComments(prev => [...prev, { id:"c_"+Date.now(), ...data, timestamp:{ toDate:()=>new Date() } }]);
       }
-      setCommentText(""); setCommentName(""); setSubmitting(false);
+      setCommentText(""); setCommentName(""); setReplyTo(null); setSubmitting(false);
     };
 
     const deleteComment = async (cid) => {
@@ -1544,40 +1621,114 @@
             ) : (
               <div style={{ marginBottom:20 }}>
                 {comments.map(c => (
-                  <div key={c.id} className="comment-item" style={{ marginBottom:8 }}>
-                    <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
-                      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                        <span style={{ fontWeight:700, fontSize:14 }}>
-                          {c.isAdmin ? (
-                            <span style={{ display:"inline-flex", alignItems:"center", gap:6 }}>
-                              <span style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", color:"white", padding:"2px 10px", borderRadius:999, fontSize:11, fontWeight:800, letterSpacing:"0.04em" }}>✦ BHT Team</span>
-                            </span>
-                          ) : (
-                            <span>{c.name}</span>
-                          )}
-                        </span>
-                        <span style={{ fontSize:11, color:"var(--muted)" }}>{timeAgo(c.timestamp)}</span>
+                  <div key={c.id} style={{ marginBottom:12 }}>
+                    {/* Reply context line */}
+                    {c.replyToName && (
+                      <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:4, marginLeft:8 }}>
+                        <div style={{ width:14, height:10, borderLeft:"2px solid #93c5fd", borderBottom:"2px solid #93c5fd", borderRadius:"0 0 0 4px", flexShrink:0 }} />
+                        <span style={{ fontSize:11, color:"var(--muted)" }}>Replying to <span style={{ color:"#2563eb", fontWeight:700 }}>@{c.replyToName}</span></span>
                       </div>
-                      {isAdmin && (
-                        <button onClick={() => deleteComment(c.id)} style={{ background:"none", border:"none", color:"var(--muted)", cursor:"pointer", fontSize:14, padding:2 }}>×</button>
-                      )}
+                    )}
+                    <div className="comment-item" style={{ position:"relative" }}>
+                      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:4 }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                          <span style={{ fontWeight:700, fontSize:13 }}>
+                            {c.isAdmin ? (
+                              <span style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", color:"white", padding:"1px 8px", borderRadius:999, fontSize:11, fontWeight:800, letterSpacing:"0.04em" }}>✦ BHT Team</span>
+                            ) : (
+                              <span>{c.name}</span>
+                            )}
+                          </span>
+                          <span style={{ fontSize:11, color:"var(--muted)" }}>{timeAgo(c.timestamp)}</span>
+                        </div>
+                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                          {!c.isAdmin && (
+                            <button
+                              onClick={() => handleReply(c)}
+                              style={{ background:"none", border:"none", color:"#2563eb", cursor:"pointer", fontSize:11, fontWeight:700, fontFamily:"DM Sans,sans-serif", padding:"2px 6px", borderRadius:6, transition:"background 0.15s" }}
+                              onMouseEnter={e => e.target.style.background="rgba(37,99,235,0.08)"}
+                              onMouseLeave={e => e.target.style.background="none"}
+                            >
+                              ↩ Reply
+                            </button>
+                          )}
+                          {isAdmin && (
+                            <button onClick={() => deleteComment(c.id)} style={{ background:"none", border:"none", color:"var(--muted)", cursor:"pointer", fontSize:13, padding:"2px 4px" }}>×</button>
+                          )}
+                        </div>
+                      </div>
+                      <p style={{ fontSize:14, color:"var(--text)", lineHeight:1.6 }}>{renderCommentText(c.text)}</p>
                     </div>
-                    <p style={{ fontSize:14, color:"var(--text)", lineHeight:1.6 }}>{c.text}</p>
                   </div>
                 ))}
               </div>
             )}
 
             {/* Add comment form */}
-            <div style={{ marginTop:16 }}>
+            <div style={{ marginTop:16, position:"relative" }}>
               <input className="inp" placeholder="Your name (required, min 4 chars)" value={commentName} onChange={e => setCommentName(e.target.value)} maxLength={30} style={{ marginBottom:8, fontSize:13 }} />
-              <div style={{ display:"flex", gap:8 }}>
-                <input className="inp" placeholder="Add a comment..." value={commentText} onChange={e => setCommentText(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && !e.shiftKey && submitComment()} />
-                <button className="btn-primary" style={{ flexShrink:0, padding:"0 20px", fontSize:13 }} onClick={submitComment} disabled={submitting}>
+
+              {/* Reply indicator */}
+              {replyTo && (
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(37,99,235,0.06)", border:"1px solid rgba(37,99,235,0.15)", borderRadius:8, padding:"5px 10px", marginBottom:6, fontSize:12 }}>
+                  <span style={{ color:"var(--muted)" }}>Replying to <span style={{ color:"#2563eb", fontWeight:700 }}>@{replyTo.name}</span></span>
+                  <button onClick={() => { setReplyTo(null); setCommentText(t => t.replace("@"+replyTo.name+" ","").trim()); }} style={{ background:"none", border:"none", color:"var(--muted)", cursor:"pointer", fontSize:14, lineHeight:1 }}>×</button>
+                </div>
+              )}
+
+              <div style={{ display:"flex", gap:8, position:"relative" }}>
+                <div style={{ flex:1, position:"relative" }}>
+                  <textarea
+                    ref={inputRef}
+                    className="inp"
+                    placeholder="Add a comment... (type @ to mention)"
+                    value={commentText}
+                    onChange={handleCommentInput}
+                    onKeyDown={e => {
+                      if (mentionQuery !== null && mentionSuggestions.length > 0 && e.key === "Tab") {
+                        e.preventDefault();
+                        insertMention(mentionSuggestions[0]);
+                      }
+                      if (e.key === "Enter" && !e.shiftKey && mentionQuery === null) {
+                        e.preventDefault();
+                        submitComment();
+                      }
+                    }}
+                    style={{ width:"100%", minHeight:40, maxHeight:100, resize:"vertical", fontSize:13, boxSizing:"border-box" }}
+                  />
+
+                  {/* @ mention dropdown */}
+                  {mentionQuery !== null && mentionSuggestions.length > 0 && (
+                    <div ref={dropdownRef} style={{
+                      position:"absolute", bottom:"calc(100% + 4px)", left:0, right:0,
+                      background:"white", border:"1px solid rgba(37,99,235,0.2)",
+                      borderRadius:10, overflow:"hidden",
+                      boxShadow:"0 4px 20px rgba(37,99,235,0.15)", zIndex:50
+                    }}>
+                      <div style={{ padding:"6px 10px", fontSize:10, color:"var(--muted)", fontWeight:700, letterSpacing:"0.08em", borderBottom:"1px solid var(--border)", textTransform:"uppercase" }}>
+                        Mention someone
+                      </div>
+                      {mentionSuggestions.map(name => (
+                        <div key={name}
+                          onClick={() => insertMention(name)}
+                          style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 12px", cursor:"pointer", transition:"background 0.12s" }}
+                          onMouseEnter={e => e.currentTarget.style.background="rgba(37,99,235,0.06)"}
+                          onMouseLeave={e => e.currentTarget.style.background="transparent"}
+                        >
+                          <div style={{ width:26, height:26, borderRadius:8, background:"linear-gradient(135deg,#2563eb,#3b82f6)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, color:"white", fontWeight:800, flexShrink:0 }}>
+                            {name.charAt(0).toUpperCase()}
+                          </div>
+                          <span style={{ fontWeight:700, fontSize:13 }}>@{name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <button className="btn-primary" style={{ flexShrink:0, padding:"0 16px", fontSize:13, alignSelf:"flex-end", height:40 }} onClick={submitComment} disabled={submitting}>
                   {submitting ? "..." : "Send"}
                 </button>
               </div>
+              <div style={{ fontSize:11, color:"var(--muted)", marginTop:5 }}>Type <strong>@</strong> to mention someone · Enter to send</div>
             </div>
           </div>
         </div>
