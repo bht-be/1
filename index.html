@@ -3,15 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BHT — Be Honest and True</title>
-  <!-- PWA -->
-  <link rel="manifest" id="bht-manifest">
+  <title>BHT — Under Maintenance</title>
   <meta name="theme-color" content="#d97706">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="BHT">
-  <link rel="apple-touch-icon" id="bht-apple-icon">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23fff8e1' stroke='%23d97706' stroke-width='2'/%3E%3Ctext x='9' y='22' font-family='Arial Black,sans-serif' font-weight='900' font-size='16' fill='%23d97706' text-anchor='middle'%3EB%3C/text%3E%3Cline x1='16' y1='5' x2='16' y2='27' stroke='%23d97706' stroke-width='1.5'/%3E%3Ctext x='23' y='22' font-family='Arial Black,sans-serif' font-weight='900' font-size='16' fill='%23292200' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
   <script>
     (function(){
@@ -20,2350 +13,356 @@
         "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23fff8e1' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Ctext x='9' y='22' font-family='Arial Black,sans-serif' font-weight='900' font-size='16' fill='%23f59e0b' text-anchor='middle'%3EB%3C/text%3E%3Cline x1='16' y1='5' x2='16' y2='27' stroke='%23f59e0b' stroke-width='2.5'/%3E%3Ctext x='23' y='22' font-family='Arial Black,sans-serif' font-weight='900' font-size='16' fill='%23d97706' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
         "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23fffbf0' stroke='%23d97706' stroke-width='2'/%3E%3Ctext x='9' y='22' font-family='Arial Black,sans-serif' font-weight='900' font-size='16' fill='%23292200' text-anchor='middle'%3EB%3C/text%3E%3Cline x1='16' y1='5' x2='16' y2='27' stroke='%23d97706' stroke-width='1.5'/%3E%3Ctext x='23' y='22' font-family='Arial Black,sans-serif' font-weight='900' font-size='16' fill='%23d97706' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E"
       ];
-      var i=0;
-      var el=document.querySelector("link[rel='icon']");
-      setInterval(function(){i=(i+1)%icons.length;el.href=icons[i];},700);
+      var i=0, el=document.querySelector("link[rel='icon']");
+      setInterval(function(){ i=(i+1)%icons.length; el.href=icons[i]; }, 700);
     })();
   </script>
-  <!-- ═══ PWA SETUP ═══ -->
-  <script>
-    (function() {
-      // ── App icon SVG ────────────────────────────────────────
-      var ICON_SVG = "data:image/svg+xml," + encodeURIComponent(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">' +
-        '<rect width="192" height="192" rx="40" fill="#d97706"/>' +
-        '<text x="96" y="140" font-family="Arial Black,sans-serif" font-weight="900" font-size="120" fill="white" text-anchor="middle">B</text>' +
-        '</svg>'
-      );
-
-      // ── Apple touch icon ────────────────────────────────────
-      var appleLink = document.getElementById('bht-apple-icon');
-      if (appleLink) appleLink.href = ICON_SVG;
-
-      // ── Web App Manifest (inline blob) ──────────────────────
-      var manifest = {
-        name: "BHT — Be Honest and True",
-        short_name: "BHT",
-        description: "Share your thoughts anonymously with people from your city",
-        start_url: "./",
-        scope: "./",
-        display: "standalone",
-        orientation: "portrait-primary",
-        theme_color: "#d97706",
-        background_color: "#fffbf0",
-        categories: ["social", "lifestyle"],
-        icons: [
-          { src: ICON_SVG, sizes: "192x192", type: "image/svg+xml" },
-          { src: ICON_SVG, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
-        ]
-      };
-      try {
-        var blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        document.getElementById('bht-manifest').href = URL.createObjectURL(blob);
-      } catch(e) {}
-
-      // ── Register Service Worker ──────────────────────────────
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('./sw.js')
-            .then(function(reg) {
-              console.log('[BHT] Service Worker registered ✓ scope:', reg.scope);
-            })
-            .catch(function(err) {
-              console.warn('[BHT] SW registration failed:', err);
-            });
-        });
-      }
-    })();
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #fffbf0;
-      --bg2: #fff8e1;
-      --card: rgba(255,255,255,0.82);
-      --border: rgba(234,179,8,0.18);
-      --teal: #d97706;
-      --coral: #f59e0b;
-      --gold: #fbbf24;
-      --text: #292200;
-      --muted: #92784a;
+      --bg:     #fffbf0;
+      --bg2:    #fff8e6;
+      --accent: #d97706;
+      --gold:   #f59e0b;
+      --deep:   #92400e;
+      --text:   #1c1006;
+      --muted:  #a07840;
+      --card:   #ffffff;
+      --border: rgba(217,119,6,0.18);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 44px;
       overflow-x: hidden;
-    }
-    h1,h2,h3 { font-family: 'Syne', sans-serif; }
-
-    /* Starfield */
-    .stars {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 0; overflow: hidden;
-    }
-    .star {
-      position: absolute; background: #fde68a; border-radius: 50%;
-      animation: twinkle var(--d) ease-in-out infinite;
-    }
-    @keyframes twinkle {
-      0%,100% { opacity: 0.1; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.2); }
+      position: relative;
     }
 
-    /* Glow orbs */
-    .orb {
-      position: fixed; border-radius: 50%; filter: blur(80px);
-      pointer-events: none; z-index: 0; opacity: 0.15;
+    h1,h2,h3 { font-family:'Syne',sans-serif; }
+
+    /* ── Background pattern dots ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, rgba(217,119,6,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none; z-index: 0;
     }
 
-    /* Glass card */
-    .glass {
-      background: rgba(255,255,255,0.82);
-      border: 1px solid rgba(234,179,8,0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    /* ── Soft amber blobs ── */
+    .blob {
+      position: fixed; border-radius: 50%;
+      filter: blur(90px); pointer-events: none; z-index: 0;
+    }
+    .blob-1 { width:420px; height:420px; background:#fbbf24; opacity:.18; top:-120px;   left:-100px;  }
+    .blob-2 { width:320px; height:320px; background:#f59e0b; opacity:.14; bottom:-80px; right:-60px;  }
+    .blob-3 { width:200px; height:200px; background:#fde68a; opacity:.22; top:50%;      left:60%;     }
+
+    /* ── Card ── */
+    .card {
+      position: relative; z-index: 10;
+      max-width: 530px; width: 100%;
+      background: var(--card);
+      border: 1.5px solid rgba(217,119,6,0.16);
+      border-radius: 28px;
+      box-shadow:
+        0 2px 0 rgba(217,119,6,0.08),
+        0 8px 32px rgba(217,119,6,0.08),
+        0 32px 80px rgba(0,0,0,0.06);
+      padding: 48px 40px 42px;
+      text-align: center;
+      animation: rise .85s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes rise {
+      from { opacity:0; transform:translateY(24px) scale(.97); }
+      to   { opacity:1; transform:none; }
+    }
+    /* top gold bar */
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 3px; border-radius: 0 0 4px 4px;
+      background: linear-gradient(90deg, var(--gold), var(--accent));
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: #fde68a; border-radius: 3px; }
+    /* ── Logo ── */
+    .logo-wrap { display:inline-flex; align-items:center; gap:11px; margin-bottom:34px; }
+    .logo-svg  { width:46px; height:46px; }
+    .logo-name { font-family:'Syne',sans-serif; font-weight:900; font-size:22px;
+                 letter-spacing:.08em; color:var(--text); text-align:left; line-height:1; }
+    .logo-sub  { font-size:10px; color:var(--muted); letter-spacing:.15em;
+                 text-transform:uppercase; margin-top:3px; text-align:left; }
 
-    /* Nav */
-    .nav-link {
-      position: relative; padding: 6px 4px; font-weight: 500;
-      color: var(--muted); transition: color 0.2s; cursor: pointer;
+    /* ── Robot ── */
+    .robot-wrap { width:170px; height:190px; margin:0 auto 34px; }
+    .robot-svg {
+      width:100%; height:100%;
+      animation: float 4.5s ease-in-out infinite;
+      filter: drop-shadow(0 12px 24px rgba(217,119,6,0.18));
     }
-    .nav-link::after {
-      content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
-      height: 2px; background: var(--teal); transform: scaleX(0);
-      transition: transform 0.2s; border-radius: 2px;
+    @keyframes float {
+      0%,100% { transform:translateY(0)     rotate(-.8deg); }
+      50%      { transform:translateY(-11px) rotate(.8deg);  }
     }
-    .nav-link.active { color: var(--teal); }
-    .nav-link.active::after { transform: scaleX(1); }
-    .nav-link:hover { color: var(--text); }
+    .eye-l,.eye-r { animation:blink 5s ease-in-out infinite; }
+    @keyframes blink { 0%,88%,100%{transform:scaleY(1);} 93%{transform:scaleY(.08);} }
+    .arm-l { animation:wave 3.2s ease-in-out infinite;         transform-origin:56px 112px; }
+    .arm-r { animation:wave 3.2s ease-in-out infinite reverse; transform-origin:114px 112px; }
+    @keyframes wave { 0%,100%{transform:rotate(0deg);} 50%{transform:rotate(13deg);} }
+    .spin-cw  { animation:spin 9s linear infinite;         transform-origin:center; }
+    .spin-ccw { animation:spin 7s linear infinite reverse; transform-origin:center; }
+    @keyframes spin { to{transform:rotate(360deg);} }
+    .ant-dot { animation:antP 1.6s ease-in-out infinite; }
+    @keyframes antP { 0%,100%{opacity:.5;} 50%{opacity:1;} }
 
-    /* Post card */
-    .post-card {
-      transition: transform 0.2s, box-shadow 0.2s;
-      border-radius: 16px;
-      animation: fadeUp 0.4s ease both;
+    /* ── Badge ── */
+    .badge {
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+      color: var(--accent);
+      background: rgba(217,119,6,0.08);
+      border: 1.5px solid rgba(217,119,6,0.22);
+      padding:5px 14px; border-radius:999px; margin-bottom:18px;
     }
-    .post-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(217,119,6,0.13);
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Reaction btn */
-    .react-btn {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03); cursor: pointer;
-      transition: all 0.18s; font-size: 13px; font-weight: 500;
-      color: var(--muted);
-    }
-    .react-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
-    .react-btn.active-like { background: rgba(99,179,237,0.15); border-color: #63b3ed; color: #63b3ed; }
-    .react-btn.active-haha { background: rgba(255,209,102,0.15); border-color: var(--gold); color: var(--gold); }
-    .react-btn.active-heart { background: rgba(255,107,107,0.15); border-color: var(--coral); color: var(--coral); }
-
-    /* Input */
-    .inp {
-      width: 100%; background: rgba(255,255,255,0.9);
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 11px 14px; color: var(--text); font-family: 'DM Sans', sans-serif;
-      font-size: 15px; outline: none; transition: border-color 0.2s;
-    }
-    .inp:focus { border-color: var(--teal); }
-    .inp::placeholder { color: var(--muted); }
-    textarea.inp { resize: vertical; min-height: 120px; line-height: 1.6; }
-
-    /* Primary btn */
-    .btn-primary {
-      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-      color: white; font-weight: 700; padding: 11px 24px;
-      border-radius: 10px; border: none; cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s; font-family: 'Syne', sans-serif;
-      font-size: 15px; letter-spacing: 0.02em;
-    }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-
-    /* Modal overlay */
-    .modal-bg {
-      position: fixed; inset: 0; background: rgba(255,251,240,0.88);
-      backdrop-filter: blur(8px); z-index: 100;
-      display: flex; align-items: center; justify-content: center; padding: 20px;
+    .bdot { width:6px; height:6px; border-radius:50%; background:var(--accent);
+            animation:bdotP 1.6s ease-in-out infinite; }
+    @keyframes bdotP {
+      0%,100%{ box-shadow:0 0 0 0 rgba(217,119,6,.5); }
+      50%    { box-shadow:0 0 0 5px transparent;       }
     }
 
-    /* City badge */
-    .city-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.2);
-      color: var(--teal); padding: 3px 10px; border-radius: 999px;
-      font-size: 12px; font-weight: 500;
+    /* ── Heading ── */
+    .heading {
+      font-family:'Syne',sans-serif; font-weight:900;
+      font-size:clamp(28px,5.5vw,42px);
+      line-height:1.12; letter-spacing:-.015em;
+      color: var(--text); margin-bottom:14px;
+    }
+    .heading em {
+      font-style:normal;
+      background:linear-gradient(130deg, var(--accent), var(--gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
     }
 
-    /* View badge */
-    .view-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      color: var(--muted); font-size: 12px;
+    .sub {
+      font-size:14.5px; color:var(--muted); line-height:1.7;
+      max-width:350px; margin:0 auto 32px;
     }
 
-    /* Admin badge */
-    .admin-badge {
-      background: linear-gradient(135deg, #7c3aed, #db2777);
-      color: white; padding: 2px 10px; border-radius: 999px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+    /* ── Divider ── */
+    .divider {
+      width:52px; height:1.5px;
+      background:linear-gradient(90deg,transparent,rgba(217,119,6,.4),transparent);
+      margin:0 auto 28px;
     }
 
-    /* Hero gradient text */
-    .grad-text {
-      background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #fbbf24 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+    /* ── Chips ── */
+    .chips { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:30px; }
+    .chip  {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:7px 15px;
+      background: rgba(217,119,6,0.05);
+      border: 1.5px solid rgba(217,119,6,0.14);
+      border-radius:999px;
+      font-size:12px; font-weight:600; color:var(--muted);
+    }
+    .chip .dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .dot-a { background:var(--accent); animation:dp 2s ease-in-out infinite; }
+    .dot-g { background:#16a34a;       animation:dp 2s ease-in-out infinite .4s; }
+    .dot-y { background:var(--gold);   animation:dp 2s ease-in-out infinite .8s; }
+    @keyframes dp {
+      0%,100%{ box-shadow:0 0 0 0 currentcolor; }
+      60%    { box-shadow:0 0 0 5px transparent; }
     }
 
-    /* Comment */
-    .comment-item {
-      padding: 10px 14px; border-radius: 10px;
-      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-      animation: fadeUp 0.3s ease both;
-    }
-
-    /* Pulse dot */
-    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.6} }
-    .pulse-dot { animation: pulse 2s infinite; }
-
-    /* Loader */
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spin { animation: spin 0.8s linear infinite; }
-
-    /* Toast */
-    .toast {
-      position: fixed; bottom: 24px; right: 24px; z-index: 999;
-      background: white; border: 1px solid var(--teal);
-      color: var(--teal); padding: 12px 20px; border-radius: 12px;
-      font-weight: 600; font-size: 14px;
-      animation: slideIn 0.3s ease, slideOut 0.3s ease 2.5s both;
-      box-shadow: 0 4px 20px rgba(217,119,6,0.15);
-    }
-    @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
-    @keyframes slideOut { from{transform:translateX(0);opacity:1} to{transform:translateX(100%);opacity:0} }
-
-    .tag-chip {
-      display: inline-block; background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border); padding: 3px 12px;
-      border-radius: 999px; font-size: 12px; color: var(--muted);
-      cursor: pointer; transition: all 0.2s;
-    }
-    .tag-chip:hover { background: rgba(217,119,6,0.08); border-color: rgba(217,119,6,0.3); color: var(--teal); }
-
-    /* Admin panel */
-    .admin-row { padding: 14px 16px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); }
-    .admin-row + .admin-row { margin-top: 8px; }
-
-    /* Number input */
-    input[type=number]::-webkit-inner-spin-button { opacity: 1; }
-
-    /* Avatar picker */
-    .avatar-grid { display: grid; grid-template-columns: repeat(10,1fr); gap: 7px; margin: 16px 0; }
-    .avatar-option {
-      width: 42px; height: 42px; border-radius: 12px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; border: 2px solid transparent;
-      transition: all 0.18s; background: rgba(255,255,255,0.6);
-    }
-    .avatar-option:hover { transform: scale(1.1); border-color: var(--teal); }
-    .avatar-option.selected { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(217,119,6,0.2); transform: scale(1.1); }
-
-    /* Logo animation */
-    @keyframes dividerPulse {
-      0%,100% { opacity:1; transform:scaleY(1); }
-      50% { opacity:0.4; transform:scaleY(0.7); }
-    }
-    @keyframes bFlash {
-      0%,100% { color:#d97706; }
-      50% { color:#f59e0b; }
-    }
-    @keyframes hFlash {
-      0%,100% { color:#292200; }
-      50% { color:#d97706; }
-    }
-    .logo-b { animation: bFlash 1.4s ease-in-out infinite; font-family:'Syne',sans-serif; font-weight:900; font-size:17px; }
-    .logo-h { animation: hFlash 1.4s ease-in-out infinite 0.7s; font-family:'Syne',sans-serif; font-weight:900; font-size:17px; }
-    .logo-divider {
-      width:2px; height:22px; background:#d97706; border-radius:2px;
-      animation: dividerPulse 1.4s ease-in-out infinite;
-    }
-
-    /* Hover menu */
-    .hover-menu {
-      position: absolute; right: 0; top: 100%; margin-top: 6px;
-      background: white; border: 1px solid var(--border);
-      border-radius: 12px; padding: 6px; min-width: 160px;
-      box-shadow: 0 8px 30px rgba(217,119,6,0.12); z-index: 50;
-    }
-    .hover-menu-item {
-      padding: 8px 12px; border-radius: 8px; cursor: pointer;
-      font-size: 13px; color: var(--muted); transition: all 0.15s;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .hover-menu-item:hover { background: rgba(255,255,255,0.06); color: var(--text); }
-    .hover-menu-item.danger:hover { background: rgba(255,107,107,0.1); color: var(--coral); }
-
-    /* ── Notification Bell ── */
-    .notif-wrap { position:relative; }
-    .notif-btn {
-      background:none; border:none; cursor:pointer;
-      width:36px; height:36px; border-radius:10px;
+    /* ── Icon buttons ── */
+    .icon-row { display:flex; gap:10px; justify-content:center; }
+    .ibtn {
+      width:44px; height:44px; border-radius:12px;
+      border: 1.5px solid rgba(217,119,6,0.16);
+      background: rgba(217,119,6,0.04);
       display:flex; align-items:center; justify-content:center;
-      transition:background 0.2s; font-size:19px; color:var(--muted);
+      cursor:pointer; color:var(--muted);
+      transition:all .2s ease;
     }
-    .notif-btn:hover { background:rgba(217,119,6,0.09); color:var(--text); }
-    .notif-badge {
-      position:absolute; top:-3px; right:-3px;
-      min-width:17px; height:17px;
-      background:#ef4444; color:white; border-radius:9px;
-      font-size:10px; font-weight:800;
-      display:flex; align-items:center; justify-content:center;
-      padding:0 3px; border:2px solid var(--bg);
-      font-family:'DM Sans',sans-serif; pointer-events:none;
-      animation: badgePop 0.3s cubic-bezier(0.175,0.885,0.32,1.6) both;
+    .ibtn:hover {
+      background: rgba(217,119,6,0.12);
+      border-color: rgba(217,119,6,0.4);
+      color: var(--accent);
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(217,119,6,0.14);
     }
-    @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
+    .ibtn svg { width:19px; height:19px; fill:currentColor; }
 
-    /* ── Notification Panel ── */
-    .notif-panel {
-      position:absolute; right:0; top:calc(100% + 10px);
-      width:310px; max-height:400px; overflow-y:auto;
-      background:white; border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow:0 12px 48px rgba(217,119,6,0.16);
-      z-index:300; animation:fadeUp 0.2s ease;
+    /* ── Footer ── */
+    .footer {
+      position:relative; z-index:10; margin-top:24px;
+      font-size:11.5px; color:rgba(160,120,64,0.5); letter-spacing:.04em;
     }
-    .notif-row {
-      padding:12px 16px; border-bottom:1px solid rgba(234,179,8,0.1);
-      cursor:pointer; transition:background 0.15s;
-      display:flex; gap:10px; align-items:flex-start;
-    }
-    .notif-row:hover { background:rgba(217,119,6,0.04); }
-    .notif-row.unread { background:rgba(217,119,6,0.07); border-left:3px solid var(--teal); }
-    .notif-row:last-child { border-bottom:none; }
+    .footer b { color:rgba(160,120,64,0.75); }
 
-    /* ── Permission Banner ── */
-    @keyframes slideUpBanner { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
-    .perm-banner {
-      position:fixed; bottom:0; left:0; right:0; z-index:500;
-      background:white; border-top:1.5px solid rgba(217,119,6,0.2);
-      padding:14px 24px;
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-      box-shadow:0 -4px 28px rgba(217,119,6,0.12);
-      animation:slideUpBanner 0.35s ease; flex-wrap:wrap;
+    @media (max-width:460px) {
+      .card { padding:32px 18px 28px; border-radius:22px; }
     }
-    /* Name color tag */
-    .name-tag {
-      display: inline-flex; align-items: center;
-      padding: 2px 10px; border-radius: 999px;
-      font-size: 11px; font-weight: 800; color: white; letter-spacing: 0.03em;
-    }
-    .emoji-strip::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body>
 
-<!-- Background decorations -->
-<div class="stars" id="stars"></div>
-<div class="orb" style="width:500px;height:500px;top:-100px;left:-100px;background:#fde68a"></div>
-<div class="orb" style="width:400px;height:400px;bottom:-100px;right:-100px;background:#fcd34d"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 
-<div id="root"></div>
+  <div class="card">
 
-<script type="text/babel">
-  const { useState, useEffect, useRef, useCallback } = React;
-
-  /* ══════════════════════════════════════════════════════
-     🔥 FIREBASE CONFIG — REPLACE WITH YOUR CREDENTIALS
-     ══════════════════════════════════════════════════════ */
-  const FIREBASE_CONFIG = {
-    apiKey:            "AIzaSyBkDqsxLQzXHCh7yRq-rN4xXn5Le2dRBas",
-    authDomain:        "be-honst.firebaseapp.com",
-    projectId:         "be-honst",
-    storageBucket:     "be-honst.firebasestorage.app",
-    messagingSenderId: "975779048741",
-    appId:             "1:975779048741:web:7306eada473adf9c66becc"
-  };
-
-  /* ════════════════════════════════════
-     ADMIN SETTINGS — CHANGE AS NEEDED
-     ════════════════════════════════════ */
-  const ADMIN_PASSWORD = "AykonoAdmin2024";
-  const ADMIN_EMAIL = "admin@bht.ma";
-  const ADMIN_DISPLAY_NAME = "✦ BHT Team";
-
-  /* ═══════════════════════════════════
-     Firebase Init
-     ═══════════════════════════════════ */
-  let db = null, auth = null, firebaseReady = false;
-  try {
-    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.firestore();
-    auth = firebase.auth();
-    // Test if configured
-    if (FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") firebaseReady = true;
-  } catch(e) { console.warn("Firebase not configured:", e); }
-
-  /* ══════════════════════════════════════════════════
-     🔔 NOTIFICATION UTILITIES
-     ══════════════════════════════════════════════════ */
-  const BHT_NOTIF_ICON = "data:image/svg+xml," + encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <rect width="64" height="64" rx="16" fill="#d97706"/>
-      <text x="32" y="45" font-family="Arial Black,sans-serif" font-weight="900"
-            font-size="38" fill="white" text-anchor="middle">B</text>
-    </svg>`
-  );
-
-  function notifSupported() {
-    return typeof window !== "undefined" && "Notification" in window;
-  }
-  function isIOSDevice() {
-    return /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
-  }
-  function getNotifPerm() {
-    if (!notifSupported()) return "unsupported";
-    return Notification.permission; // "default" | "granted" | "denied"
-  }
-  async function askNotifPermission() {
-    if (!notifSupported() || isIOSDevice()) return "unsupported";
-    if (Notification.permission !== "default") return Notification.permission;
-    try { return await Notification.requestPermission(); }
-    catch(e) { return "denied"; }
-  }
-  function fireNotif(title, body, tag, onClick) {
-    if (!notifSupported() || Notification.permission !== "granted") return;
-    try {
-      const n = new Notification(title, {
-        body, tag: tag || "bht", renotify: true,
-        icon: BHT_NOTIF_ICON, badge: BHT_NOTIF_ICON,
-      });
-      n.onclick = () => { window.focus(); if (onClick) onClick(); n.close(); };
-    } catch(e) {}
-  }
-
-  /* ═══════════════════════════════════
-     Helpers
-     ═══════════════════════════════════ */
-  const MOROCCAN_CITIES = [
-    "Casablanca","Rabat","Marrakech","Fès","Tanger","Agadir","Meknès","Oujda",
-    "Kenitra","Tétouan","El Jadida","Safi","Mohammedia","Khouribga","Beni Mellal",
-    "Nador","Settat","Berrechid","Khénifra","Taza","Salé","Laayoune","Dakhla"
-  ];
-
-  function timeAgo(ts) {
-    if (!ts) return "just now";
-    const d = ts.toDate ? ts.toDate() : new Date(ts);
-    const s = Math.floor((Date.now() - d) / 1000);
-    if (s < 60) return "just now";
-    if (s < 3600) return `${Math.floor(s/60)}m ago`;
-    if (s < 86400) return `${Math.floor(s/3600)}h ago`;
-    return `${Math.floor(s/86400)}d ago`;
-  }
-
-  function formatNum(n) {
-    if (!n) return 0;
-    if (n >= 1000) return (n/1000).toFixed(1) + "k";
-    return n;
-  }
-
-  /* Name-based color — consistent per name */
-  const NAME_COLORS = [
-    ["#2563eb","#1d4ed8"], // blue
-    ["#7c3aed","#6d28d9"], // violet
-    ["#ec4899","#db2777"], // pink
-    ["#059669","#047857"], // green
-    ["#dc2626","#b91c1c"], // red
-    ["#d97706","#b45309"], // amber
-    ["#0891b2","#0e7490"], // cyan
-    ["#9333ea","#7e22ce"], // purple
-    ["#16a34a","#15803d"], // emerald
-    ["#ea580c","#c2410c"], // orange
-  ];
-  function nameColor(name) {
-    if (!name) return NAME_COLORS[0];
-    let h = 0;
-    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % NAME_COLORS.length;
-    return NAME_COLORS[Math.abs(h)];
-  }
-
-  /* ═══════════════════════════════════
-     Hook: User ID (Firebase anon auth)
-     ═══════════════════════════════════ */
-  function useUserId() {
-    const [uid, setUid] = useState(() => localStorage.getItem("aykono_uid") || null);
-    useEffect(() => {
-      if (!auth || !firebaseReady) {
-        let id = localStorage.getItem("aykono_uid");
-        if (!id) { id = "anon_" + Math.random().toString(36).slice(2); localStorage.setItem("aykono_uid", id); }
-        setUid(id); return;
-      }
-      auth.signInAnonymously().then(r => {
-        const id = r.user.uid;
-        localStorage.setItem("aykono_uid", id);
-        setUid(id);
-      }).catch(() => {
-        let id = localStorage.getItem("aykono_uid");
-        if (!id) { id = "anon_" + Math.random().toString(36).slice(2); localStorage.setItem("aykono_uid", id); }
-        setUid(id);
-      });
-    }, []);
-    return uid;
-  }
-
-  /* ═══════════════════════════════════
-     Starfield generator
-     ═══════════════════════════════════ */
-  function generateStars() {
-    const container = document.getElementById("stars");
-    if (!container) return;
-    for (let i = 0; i < 120; i++) {
-      const s = document.createElement("div");
-      s.className = "star";
-      const sz = Math.random() * 2.5 + 0.5;
-      s.style.cssText = `
-        width:${sz}px; height:${sz}px;
-        top:${Math.random()*100}%;
-        left:${Math.random()*100}%;
-        --d:${Math.random()*4+2}s;
-        animation-delay:${Math.random()*4}s;
-      `;
-      container.appendChild(s);
-    }
-  }
-
-  /* ═══════════════════════════════════
-     Toast Component
-     ═══════════════════════════════════ */
-  function Toast({ msg, onDone }) {
-    useEffect(() => { const t = setTimeout(onDone, 3000); return () => clearTimeout(t); }, []);
-    return <div className="toast">{msg}</div>;
-  }
-
-  /* ═══════════════════════════════════
-     LOADING SCREEN
-     ═══════════════════════════════════ */
-  function LoadingScreen() {
-    const [tick, setTick] = useState(0);
-    useEffect(() => {
-      const iv = setInterval(() => setTick(t => t + 1), 400);
-      return () => clearInterval(iv);
-    }, []);
-    return (
-      <div style={{
-        position:"fixed", inset:0, background:"#fffbf0",
-        display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-        zIndex:9999, gap:32
-      }}>
-        <div style={{ position:"absolute", width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle, rgba(253,230,138,0.5) 0%, transparent 70%)", top:"5%", left:"5%", filter:"blur(60px)", pointerEvents:"none" }} />
-        <div style={{ position:"absolute", width:300, height:300, borderRadius:"50%", background:"radial-gradient(circle, rgba(251,191,36,0.3) 0%, transparent 70%)", bottom:"5%", right:"5%", filter:"blur(60px)", pointerEvents:"none" }} />
-        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:20 }}>
-          <div style={{
-            width:90, height:90, borderRadius:26,
-            background:"linear-gradient(135deg,#d97706,#f59e0b)",
-            display:"flex", alignItems:"center", justifyContent:"center",
-            animation:"bhtPulse 1.8s ease-in-out infinite",
-            boxShadow:"0 0 60px rgba(217,119,6,0.4)"
-          }}>
-            <span style={{ fontFamily:"Syne,sans-serif", fontWeight:900, fontSize:48, color:"white", lineHeight:1, userSelect:"none" }}>B</span>
-          </div>
-          <div style={{ textAlign:"center" }}>
-            <div style={{ fontFamily:"Syne,sans-serif", fontWeight:900, fontSize:32, color:"#292200", letterSpacing:"-0.02em" }}>BHT</div>
-            <div style={{ fontSize:11, color:"#92784a", letterSpacing:"0.18em", textTransform:"uppercase", marginTop:5 }}>Be Honest and True</div>
-          </div>
-        </div>
-        <div style={{ display:"flex", gap:8, marginTop:8 }}>
-          {[0,1,2].map(i => (
-            <div key={i} style={{
-              width:8, height:8, borderRadius:"50%",
-              background: tick % 3 === i ? "#d97706" : "rgba(217,119,6,0.2)",
-              transform: tick % 3 === i ? "scale(1.4)" : "scale(1)",
-              transition:"all 0.3s ease"
-            }} />
-          ))}
-        </div>
-        <style>{`@keyframes bhtPulse { 0%,100%{transform:scale(1);box-shadow:0 0 60px rgba(217,119,6,0.35)} 50%{transform:scale(1.06);box-shadow:0 0 90px rgba(217,119,6,0.6)} }`}</style>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     Main App
-     ═══════════════════════════════════ */
-  function App() {
-    const [page, setPage] = useState("home");
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [appReady, setAppReady] = useState(false);
-    const [showCreate, setShowCreate] = useState(false);
-    const [showAdmin, setShowAdmin] = useState(false);
-    const [adminAuthed, setAdminAuthed] = useState(false);
-    const [selectedPost, setSelectedPost] = useState(null);
-    const [toast, setToast] = useState(null);
-    const uid = useUserId();
-    const viewedThisSession = useRef(new Set());
-    const secretClicks = useRef(0);
-    const secretTimer = useRef(null);
-
-    // ── Notification state ──────────────────────────────
-    const [notifItems, setNotifItems]       = useState([]);   // personal notifs (comments on my posts)
-    const [newBroadcasts, setNewBroadcasts] = useState([]);   // new posts from others
-    const [notifPerm, setNotifPerm]         = useState(() => getNotifPerm());
-    const [showPermBanner, setShowPermBanner] = useState(false);
-    const [showNotifPanel, setShowNotifPanel] = useState(false);
-    const lastVisitTsRef = useRef(parseInt(localStorage.getItem("bht_last_visit_ts") || "0"));
-    const unreadPersonal = notifItems.filter(n => !n.read).length;
-    const unreadCount = unreadPersonal + newBroadcasts.length;
-
-    // ── PWA install prompt ──────────────────────────────
-    const [pwaPrompt, setPwaPrompt] = useState(null);
-    const [pwaInstalled, setPwaInstalled] = useState(false);
-    useEffect(() => {
-      const handler = e => { e.preventDefault(); setPwaPrompt(e); };
-      window.addEventListener('beforeinstallprompt', handler);
-      window.addEventListener('appinstalled', () => { setPwaInstalled(true); setPwaPrompt(null); });
-      return () => window.removeEventListener('beforeinstallprompt', handler);
-    }, []);
-    const handleSecretClick = (e) => {
-      e.stopPropagation();
-      secretClicks.current += 1;
-      clearTimeout(secretTimer.current);
-      secretTimer.current = setTimeout(() => { secretClicks.current = 0; }, 1500);
-      if (secretClicks.current >= 5) { secretClicks.current = 0; setShowAdmin(true); }
-      else { setPage("home"); }
-    };
-
-    const showToast = (msg) => { setToast(msg); };
-    const hideToast = () => setToast(null);
-
-    // Show loading screen until data is ready (min 1.2s for smooth UX)
-    useEffect(() => {
-      if (!loading) {
-        const t = setTimeout(() => setAppReady(true), 600);
-        return () => clearTimeout(t);
-      }
-    }, [loading]);
-
-    useEffect(() => { generateStars(); }, []);
-
-    // ── Notification permission banner ─────────────────
-    useEffect(() => {
-      if (isIOSDevice() || !notifSupported()) return; // iOS Safari → no support
-      if (notifPerm === "default") {
-        const t = setTimeout(() => setShowPermBanner(true), 4000);
-        return () => clearTimeout(t);
-      }
-    }, [notifPerm]);
-
-    // Update last-visit timestamp so we know what's "new" next time
-    useEffect(() => {
-      const t = setTimeout(() => {
-        localStorage.setItem("bht_last_visit_ts", Date.now().toString());
-      }, 6000);
-      return () => clearTimeout(t);
-    }, []);
-
-    // ── Listen to broadcasts (new posts from others) ────
-    useEffect(() => {
-      if (!uid || !firebaseReady || !db) return;
-      let isInit = true; // local — resets every time uid changes and effect re-runs
-      const unsub = db.collection("broadcasts")
-        .orderBy("ts", "desc").limit(30)
-        .onSnapshot(snap => {
-          if (isInit) {
-            isInit = false;
-            // Show badge for posts created since last visit (but NOT own posts)
-            const lastTs = lastVisitTsRef.current;
-            const missed = snap.docs
-              .map(d => ({ id: d.id, ...d.data() }))
-              .filter(b => {
-                if (b.authorUid === uid) return false;
-                const bTs = b.ts?.toDate?.()?.getTime?.() || 0;
-                return bTs > lastTs;
-              });
-            if (missed.length > 0) setNewBroadcasts(missed);
-            return;
-          }
-          snap.docChanges().forEach(change => {
-            if (change.type !== "added") return;
-            const data = { id: change.doc.id, ...change.doc.data() };
-            if (data.authorUid === uid) return; // own post → no notif
-            // New posts → badge + panel + browser notification
-            setNewBroadcasts(prev => [data, ...prev]);
-            fireNotif(
-              "📢 New post on BHT",
-              `${data.postAuthorName || "Someone"}: ${data.preview || ""}`,
-              "bht-new-post",
-              () => setPage("posts")
-            );
-          });
-        });
-      return () => unsub();
-    }, [uid]);
-
-    // ── Listen to personal notifs (replies on my posts/comments) ──
-    useEffect(() => {
-      if (!uid || !firebaseReady || !db) return;
-      let isInit = true; // local — resets every time uid changes
-      const unsub = db.collection("notifs")
-        .where("toUid", "==", uid)
-        .orderBy("ts", "desc").limit(30)
-        .onSnapshot(snap => {
-          const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          if (!isInit) {
-            snap.docChanges().forEach(change => {
-              if (change.type === "added") {
-                const data = { id: change.doc.id, ...change.doc.data() };
-                if (!data.read) {
-                  const isReact = data.type === "new_react";
-                  const emojiMap = { like: "👍", haha: "😂", heart: "❤️" };
-                  fireNotif(
-                    isReact ? `${emojiMap[data.reactType] || "❤️"} New reaction on BHT` : "💬 New reply on BHT",
-                    isReact
-                      ? `Someone reacted ${emojiMap[data.reactType] || ""} to your post`
-                      : `${data.fromName || "Someone"} replied: ${data.preview || ""}`,
-                    isReact ? "bht-react" : "bht-reply",
-                    () => {}
-                  );
-                }
-              }
-            });
-          } else {
-            isInit = false;
-          }
-          setNotifItems(all);
-        });
-      return () => unsub();
-    }, [uid]);
-
-    // ── Mark all notifications as read ─────────────────
-    const markAllRead = useCallback(async () => {
-      setNewBroadcasts([]);
-      if (firebaseReady && db) {
-        const unread = notifItems.filter(n => !n.read);
-        if (unread.length > 0) {
-          const batch = db.batch();
-          unread.forEach(n => batch.update(db.collection("notifs").doc(n.id), { read: true }));
-          try { await batch.commit(); } catch(e) {}
-        }
-      }
-      setNotifItems(prev => prev.map(n => ({ ...n, read: true })));
-    }, [notifItems]);
-
-    /* Load posts from Firestore */
-    useEffect(() => {
-      if (!firebaseReady || !db) {
-        // DEMO DATA when Firebase not configured
-        setPosts([
-          {
-            id:"demo1", name:"StarWatcher99", content:"Sometimes I feel like the whole city is sleeping and I'm the only one awake, watching the lights flicker one by one.\n\nThere's something beautiful about 3am — when the world belongs to dreamers and night owls. Does anyone else feel this way?", city:"Casablanca",
-            timestamp: { toDate: () => new Date(Date.now()-3600000) },
-            viewCount:142, viewers:[], reactions:{like:["u1","u2"],haha:["u3"],heart:["u1"]},
-            order:0, pinned:false, comments:[]
-          },
-          {
-            id:"demo2", name:"OceanMind", content:"Overthinking is my cardio 🏃‍♂️\n\nBut seriously, why do we always replay conversations that happened 3 years ago at 2am?", city:"Rabat",
-            timestamp: { toDate: () => new Date(Date.now()-7200000) },
-            viewCount:89, viewers:[], reactions:{like:["u1"],haha:["u1","u2","u3"],heart:[]},
-            order:1, pinned:false, comments:[]
-          },
-          {
-            id:"demo3", name:"Moonchaser", content:"Hot take: the best version of yourself already exists.\n\nYou just haven't met them yet. Keep going.", city:"Marrakech",
-            timestamp: { toDate: () => new Date(Date.now()-86400000) },
-            viewCount:256, viewers:[], reactions:{like:["u1","u2","u3"],haha:[],heart:["u1","u2"]},
-            order:2, pinned:false, comments:[]
-          }
-        ]);
-        setLoading(false);
-        return;
-      }
-
-      const unsub = db.collection("posts")
-        .orderBy("timestamp", "desc")
-        .onSnapshot(snap => {
-          const ps = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          ps.sort((a,b) => {
-            if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-            const ta = a.timestamp?.toDate?.() || new Date(0);
-            const tb = b.timestamp?.toDate?.() || new Date(0);
-            return tb - ta;
-          });
-          setPosts(ps);
-          setLoading(false);
-        }, () => setLoading(false));
-      return () => unsub();
-    }, []);
-
-    /* Track view — fires once per session per post when posts are loaded */
-    const trackView = useCallback(async (postId) => {
-      if (!uid || !firebaseReady || !db) return;
-      if (viewedThisSession.current.has(postId)) return;
-      viewedThisSession.current.add(postId);
-      const ref = db.collection("posts").doc(postId);
-      try {
-        const snap = await ref.get();
-        if (!snap.exists) return;
-        const viewers = snap.data().viewers || [];
-        if (viewers.includes(uid)) return; // already viewed before
-        await ref.update({
-          viewers: firebase.firestore.FieldValue.arrayUnion(uid),
-          viewCount: firebase.firestore.FieldValue.increment(1)
-        });
-      } catch(e) {}
-    }, [uid]);
-
-    /* Auto-track views when posts load */
-    useEffect(() => {
-      if (!uid || posts.length === 0) return;
-      posts.forEach(p => trackView(p.id));
-    }, [posts.length > 0 ? uid : null, posts.length]);
-
-    /* Create post */
-    const createPost = async (name, content, city, avatar) => {
-      const post = {
-        name, content, city, avatar: avatar || "🦊",
-        authorUid: uid,
-        timestamp: firebaseReady && db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
-        viewCount: 0, viewers: [],
-        reactions: { like: [], haha: [], heart: [] },
-        order: posts.length, pinned: false
-      };
-      if (firebaseReady && db) {
-        const docRef = await db.collection("posts").add(post);
-        // Broadcast to all users
-        try {
-          await db.collection("broadcasts").add({
-            type: "new_post",
-            postId: docRef.id,
-            authorUid: uid,
-            postAuthorName: name || "Anonymous",
-            preview: content.slice(0, 120),
-            ts: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        } catch(e) {}
-      } else {
-        // Demo mode
-        setPosts(prev => [{ id: "post_" + Date.now(), ...post, timestamp: { toDate: () => new Date() } }, ...prev]);
-      }
-      showToast("✨ Post published!");
-      setPage("posts");
-    };
-
-    /* ── Reactions: localStorage-first, Firebase best-effort ─────────────
-       Only real user clicks are tracked — no default/fake reactions.
-    ────────────────────────────────────────────────────────────────────── */
-    const LS_KEY = "bht_reacts_v3"; // v3 = real reactions only (resets old fake data)
-
-    function loadLocalReacts() {
-      try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { return {}; }
-    }
-    function saveLocalReacts(map) {
-      try { localStorage.setItem(LS_KEY, JSON.stringify(map)); } catch {}
-    }
-
-    // Apply merge whenever posts or uid changes
-    const [mergedPosts, setMergedPosts] = useState([]);
-    useEffect(() => {
-      if (!uid) { setMergedPosts(posts); return; }
-      const saved = loadLocalReacts();
-      const result = posts.map(p => {
-        // Only use a reaction if the user explicitly set one (saved key exists and is non-null)
-        const myReact = saved.hasOwnProperty(p.id) ? saved[p.id] : null;
-        const r = {
-          like:  [...(p.reactions?.like  || [])].filter(u => u !== uid),
-          haha:  [...(p.reactions?.haha  || [])].filter(u => u !== uid),
-          heart: [...(p.reactions?.heart || [])].filter(u => u !== uid),
-        };
-        if (myReact) r[myReact] = [...r[myReact], uid];
-        return { ...p, reactions: r };
-      });
-      setMergedPosts(result);
-    }, [posts, uid]);
-
-    const toggleReaction = async (postId, type) => {
-      if (!uid) return;
-
-      // 1. Read current saved state
-      const saved = loadLocalReacts();
-      const prev = saved.hasOwnProperty(postId) ? saved[postId] : null; // real only
-      const next = prev === type ? null : type; // toggle off if same, else switch
-
-      // 2. Save to localStorage instantly
-      saved[postId] = next;
-      saveLocalReacts(saved);
-
-      // 3. Update UI immediately
-      setMergedPosts(cur => cur.map(p => {
-        if (p.id !== postId) return p;
-        const r = {
-          like:  [...(p.reactions?.like  || [])].filter(u => u !== uid),
-          haha:  [...(p.reactions?.haha  || [])].filter(u => u !== uid),
-          heart: [...(p.reactions?.heart || [])].filter(u => u !== uid),
-        };
-        if (next) r[next] = [...r[next], uid];
-        return { ...p, reactions: r };
-      }));
-
-      // 4. Try to sync to Firebase (best-effort, silent on failure)
-      if (firebaseReady && db) {
-        const ref = db.collection("posts").doc(postId);
-        const FV = firebase.firestore.FieldValue;
-        const upd = {
-          "reactions.like":  FV.arrayRemove(uid),
-          "reactions.haha":  FV.arrayRemove(uid),
-          "reactions.heart": FV.arrayRemove(uid),
-        };
-        if (next) upd[`reactions.${next}`] = FV.arrayUnion(uid);
-        try { await ref.update(upd); } catch(e) { /* silent — localStorage already saved */ }
-
-        // ── Notify post author about new reaction ──────────────────────
-        if (next) {
-          const thePost = mergedPosts.find(p => p.id === postId);
-          if (thePost && thePost.authorUid && thePost.authorUid !== uid) {
-            const emojiMap = { like: "👍", haha: "😂", heart: "❤️" };
-            try {
-              await db.collection("notifs").add({
-                type: "new_react",
-                postId,
-                toUid: thePost.authorUid,
-                fromUid: uid,
-                fromName: "Someone",
-                reactType: next,
-                preview: `reacted ${emojiMap[next]} to your post`,
-                ts: FV.serverTimestamp(),
-                read: false
-              });
-            } catch(e) {}
-          }
-        }
-      }
-    };
-
-    if (!appReady) return <LoadingScreen />;
-
-    return (
-      <div style={{ position:"relative", zIndex:1, minHeight:"100vh" }}>
-        {/* NAV */}
-        <nav style={{ padding:"0 20px", borderBottom:"1px solid var(--border)", background:"rgba(255,251,240,0.88)", backdropFilter:"blur(12px)", position:"sticky", top:0, zIndex:300 }}>
-          <div style={{ maxWidth:800, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:58 }}>
-
-            {/* LEFT — Logo */}
-            <div style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:8 }} onClick={handleSecretClick}>
-              <div style={{ width:34, height:34, borderRadius:10, background:"linear-gradient(135deg,#d97706,#f59e0b)", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"Syne,sans-serif", fontWeight:900, fontSize:19, color:"white", flexShrink:0, userSelect:"none" }}>B</div>
-              <span style={{ fontFamily:"Syne,sans-serif", fontWeight:800, fontSize:18, letterSpacing:"-0.02em" }}>BHT</span>
-            </div>
-
-            {/* CENTER — Nav links */}
-            <div style={{ display:"flex", alignItems:"center", gap:4 }}>
-              <span className={`nav-link ${page==="home"?"active":""}`} onClick={() => setPage("home")}>Home</span>
-              <span className={`nav-link ${page==="posts"?"active":""}`} onClick={() => setPage("posts")}>Posts</span>
-              {pwaPrompt && !pwaInstalled && (
-                <button onClick={async () => { pwaPrompt.prompt(); const r = await pwaPrompt.userChoice; if (r.outcome === 'accepted') setPwaInstalled(true); setPwaPrompt(null); }}
-                  style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px", borderRadius:8, border:"1px solid rgba(217,119,6,0.35)", background:"rgba(217,119,6,0.07)", color:"var(--teal)", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"DM Sans,sans-serif", transition:"all 0.2s", whiteSpace:"nowrap" }}
-                  title="Install BHT as an app">
-                  📲 Install
-                </button>
-              )}
-            </div>
-
-            {/* RIGHT — Notification bell, visually separated */}
-            <div style={{ display:"flex", alignItems:"center" }}>
-              <div style={{ width:1, height:22, background:"var(--border)", marginRight:14 }} />
-              <div className="notif-wrap">
-                <button className="notif-btn" title="Notifications"
-                  onClick={() => { setShowNotifPanel(v => !v); if (!showNotifPanel) markAllRead(); }}>
-                  🔔
-                  {unreadCount > 0 && (
-                    <span className="notif-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
-                  )}
-                </button>
-                {showNotifPanel && (
-                  <NotifPanel
-                    broadcasts={newBroadcasts}
-                    items={notifItems}
-                    onClose={() => setShowNotifPanel(false)}
-                    onGoToPosts={() => { setPage("posts"); setShowNotifPanel(false); }}
-                  />
-                )}
-              </div>
-            </div>
-
-          </div>
-        </nav>
-
-        {/* PAGES */}
-        <div style={{ maxWidth:800, margin:"0 auto", padding:"0 24px 80px" }}>
-          {page === "home" && (
-            <HomePage onWritePost={() => setShowCreate(true)} onViewPosts={() => setPage("posts")} posts={mergedPosts} uid={uid} onReact={toggleReaction} onOpenPost={p => setSelectedPost(p)} />
-          )}
-          {page === "posts" && (
-            <PostsFeed
-              posts={mergedPosts} loading={loading} uid={uid}
-              onReact={toggleReaction} onOpenPost={p => { setSelectedPost(p); }}
-              onWritePost={() => setShowCreate(true)}
-            />
-          )}
-        </div>
-
-        {/* MODALS */}
-        {showCreate && (
-          <CreatePostModal onClose={() => setShowCreate(false)} onSubmit={createPost} />
-        )}
-        {selectedPost && (
-          <PostDetailModal
-            post={mergedPosts.find(p => p.id === selectedPost.id) || selectedPost} uid={uid}
-            onClose={() => setSelectedPost(null)}
-            onReact={toggleReaction}
-            isAdmin={adminAuthed}
-            onDelete={async (pid) => {
-              if (!window.confirm("Delete this post?")) return;
-              if (firebaseReady && db) await db.collection("posts").doc(pid).delete();
-              else setPosts(prev => prev.filter(p => p.id !== pid));
-              setSelectedPost(null); showToast("Post deleted");
-            }}
-          />
-        )}
-        {showAdmin && (
-          <AdminPanel
-            posts={posts} authed={adminAuthed}
-            onAuth={() => setAdminAuthed(true)}
-            onClose={() => setShowAdmin(false)}
-            setPosts={setPosts}
-            showToast={showToast}
-            db={db} firebaseReady={firebaseReady}
-          />
-        )}
-
-        {toast && <Toast msg={toast} onDone={hideToast} />}
-
-        {/* Close notif panel on outside click */}
-        {showNotifPanel && (
-          <div style={{ position:"fixed", inset:0, zIndex:280 }} onClick={() => setShowNotifPanel(false)} />
-        )}
-
-        {/* Permission banner — not shown on iOS */}
-        {showPermBanner && !isIOSDevice() && notifPerm === "default" && (
-          <NotifPermBanner
-            onAllow={async () => {
-              const p = await askNotifPermission();
-              setNotifPerm(p);
-              setShowPermBanner(false);
-            }}
-            onDismiss={() => setShowPermBanner(false)}
-          />
-        )}
-
-        {/* iOS Install Instructions banner */}
-        {isIOSDevice() && !pwaInstalled && !localStorage.getItem("bht_ios_dismissed") && (
-          <div style={{ position:"fixed", bottom:0, left:0, right:0, zIndex:500, background:"white", borderTop:"1.5px solid rgba(217,119,6,0.2)", padding:"14px 20px", display:"flex", alignItems:"center", gap:12, boxShadow:"0 -4px 28px rgba(217,119,6,0.12)", flexWrap:"wrap" }}>
-            <div style={{ fontSize:28, flexShrink:0 }}>📲</div>
-            <div style={{ flex:1, minWidth:180 }}>
-              <div style={{ fontWeight:700, fontSize:14, color:"var(--text)" }}>Install BHT on iPhone</div>
-              <div style={{ fontSize:12, color:"var(--muted)", marginTop:2 }}>
-                Tap <strong>⎙ Share</strong> → <strong>"Add to Home Screen"</strong> → get notifications even when app is closed
-              </div>
-            </div>
-            <button onClick={() => { localStorage.setItem("bht_ios_dismissed","1"); }} style={{ background:"none", border:"none", color:"var(--muted)", fontSize:20, cursor:"pointer", padding:4 }}>×</button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     HOME PAGE
-     ═══════════════════════════════════ */
-  function HomePage({ onWritePost, onViewPosts, posts, uid, onReact, onOpenPost }) {
-    const tags = ["confession","thoughts","feelings","questions","rant","advice","story","secret"];
-    return (
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="12" fill="#fff8e1" stroke="#d97706" stroke-width="2.5"/>
+        <text x="14" y="33" font-family="Arial Black,sans-serif" font-weight="900" font-size="22" fill="#d97706" text-anchor="middle">B</text>
+        <line x1="24" y1="7" x2="24" y2="41" stroke="#d97706" stroke-width="2.2"/>
+        <text x="34" y="33" font-family="Arial Black,sans-serif" font-weight="900" font-size="22" fill="#292200" text-anchor="middle">H</text>
+      </svg>
       <div>
-        {/* HERO */}
-        <div style={{ textAlign:"center", padding:"80px 0 60px" }}>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:8, background:"rgba(217,119,6,0.08)", border:"1px solid rgba(217,119,6,0.2)", padding:"6px 16px", borderRadius:999, marginBottom:32 }}>
-            <span style={{ width:8, height:8, borderRadius:"50%", background:"var(--teal)", display:"block" }} className="pulse-dot"></span>
-            <span style={{ fontSize:13, color:"var(--teal)", fontWeight:600 }}>{posts.length} anonymous voices right now</span>
-          </div>
-
-          <h1 style={{ fontSize:"clamp(40px,7vw,72px)", fontWeight:900, lineHeight:1.05, marginBottom:24, letterSpacing:"-0.03em" }}>
-            Say what you<br/><span className="grad-text">really think</span>
-          </h1>
-
-          <p style={{ fontSize:18, color:"var(--muted)", maxWidth:480, margin:"0 auto 40px", lineHeight:1.7 }}>
-            No filters. No judgment. Share your thoughts, confessions, and feelings — completely anonymous, with people from your city.
-          </p>
-
-          <div style={{ display:"flex", gap:12, justifyContent:"center", flexWrap:"wrap" }}>
-            <button className="btn-primary" style={{ fontSize:16, padding:"14px 32px" }} onClick={onWritePost}>
-              ✍️ Write Anonymously
-            </button>
-            <button style={{ padding:"14px 32px", borderRadius:10, border:"1px solid var(--border)", background:"transparent", color:"var(--text)", fontSize:16, cursor:"pointer", fontFamily:"DM Sans,sans-serif", transition:"all 0.2s" }}
-              onClick={onViewPosts} onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.05)"} onMouseLeave={e => e.target.style.background = "transparent"}>
-              Browse Posts →
-            </button>
-          </div>
-
-          {/* Floating tags */}
-          <div style={{ display:"flex", flexWrap:"wrap", gap:8, justifyContent:"center", marginTop:48 }}>
-            {tags.map(t => <span key={t} className="tag-chip" onClick={onViewPosts}>#{t}</span>)}
-          </div>
-        </div>
-
-        {/* STATS */}
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:60 }}>
-          {[
-            { icon:"🗣️", label:"Posts", val: posts.length },
-            { icon:"👁️", label:"Total Views", val: posts.reduce((a,p)=>a+(p.viewCount||0),0) },
-            { icon:"❤️", label:"Reactions", val: posts.reduce((a,p)=>a+Object.values(p.reactions||{}).flat().length,0) }
-          ].map(s => (
-            <div key={s.label} className="glass" style={{ padding:24, borderRadius:16, textAlign:"center" }}>
-              <div style={{ fontSize:28, marginBottom:8 }}>{s.icon}</div>
-              <div style={{ fontFamily:"Syne,sans-serif", fontSize:28, fontWeight:800, color:"var(--teal)" }}>{formatNum(s.val)}</div>
-              <div style={{ color:"var(--muted)", fontSize:13, marginTop:4 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* RECENT POSTS PREVIEW */}
-        {posts.slice(0,3).map((p,i) => (
-          <PostCard key={p.id} post={p} uid={uid} onReact={onReact} onClick={() => onOpenPost(p)} preview style={{ animationDelay: `${i*0.1}s` }} />
-        ))}
-
-        {posts.length > 3 && (
-          <div style={{ textAlign:"center", marginTop:24 }}>
-            <button style={{ padding:"12px 28px", borderRadius:10, border:"1px solid var(--teal)", background:"transparent", color:"var(--teal)", fontSize:14, cursor:"pointer", fontFamily:"DM Sans,sans-serif", fontWeight:600 }}
-              onClick={onViewPosts}>
-              See all {posts.length} posts →
-            </button>
-          </div>
-        )}
+        <div class="logo-name">BHT</div>
+        <div class="logo-sub">Be Honest and True</div>
       </div>
-    );
-  }
+    </div>
+
+    <!-- Robot -->
+    <div class="robot-wrap">
+      <svg class="robot-svg" viewBox="0 0 170 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- gears -->
+        <g class="spin-cw" style="transform-origin:24px 145px">
+          <circle cx="24" cy="145" r="13" stroke="rgba(217,119,6,0.3)" stroke-width="2.5" fill="none"/>
+          <circle cx="24" cy="145" r="6"  stroke="rgba(217,119,6,0.35)" stroke-width="2" fill="rgba(217,119,6,0.1)"/>
+          <g stroke="rgba(217,119,6,0.35)" stroke-width="2.5" stroke-linecap="round">
+            <line x1="24" y1="128" x2="24" y2="132"/><line x1="24" y1="158" x2="24" y2="162"/>
+            <line x1="7"  y1="145" x2="11" y2="145"/><line x1="37" y1="145" x2="41" y2="145"/>
+            <line x1="12.7" y1="133.7" x2="15.5" y2="136.5"/><line x1="32.5" y1="153.5" x2="35.3" y2="156.3"/>
+            <line x1="35.3" y1="133.7" x2="32.5" y2="136.5"/><line x1="15.5" y1="153.5" x2="12.7" y2="156.3"/>
+          </g>
+        </g>
+        <g class="spin-ccw" style="transform-origin:146px 145px">
+          <circle cx="146" cy="145" r="13" stroke="rgba(245,158,11,0.28)" stroke-width="2.5" fill="none"/>
+          <circle cx="146" cy="145" r="6"  stroke="rgba(245,158,11,0.32)" stroke-width="2" fill="rgba(245,158,11,0.08)"/>
+          <g stroke="rgba(245,158,11,0.32)" stroke-width="2.5" stroke-linecap="round">
+            <line x1="146" y1="128" x2="146" y2="132"/><line x1="146" y1="158" x2="146" y2="162"/>
+            <line x1="129" y1="145" x2="133" y2="145"/><line x1="159" y1="145" x2="163" y2="145"/>
+            <line x1="134.7" y1="133.7" x2="137.5" y2="136.5"/><line x1="154.5" y1="153.5" x2="157.3" y2="156.3"/>
+            <line x1="157.3" y1="133.7" x2="154.5" y2="136.5"/><line x1="137.5" y1="153.5" x2="134.7" y2="156.3"/>
+          </g>
+        </g>
+        <!-- antenna -->
+        <line x1="85" y1="26" x2="85" y2="40" stroke="#d97706" stroke-width="2.2" stroke-linecap="round"/>
+        <circle class="ant-dot" cx="85" cy="21" r="5" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+        <!-- head -->
+        <rect x="50" y="40" width="70" height="58" rx="14" fill="#fffbf0" stroke="#d97706" stroke-width="2"/>
+        <rect x="56" y="45" width="58" height="7" rx="3.5" fill="rgba(251,191,36,0.12)"/>
+        <!-- eye sockets -->
+        <rect x="60" y="54" width="19" height="19" rx="6" fill="rgba(217,119,6,0.08)" stroke="rgba(217,119,6,0.35)" stroke-width="1.5"/>
+        <rect x="91" y="54" width="19" height="19" rx="6" fill="rgba(217,119,6,0.08)" stroke="rgba(217,119,6,0.35)" stroke-width="1.5"/>
+        <!-- pupils -->
+        <g class="eye-l" style="transform-origin:69.5px 63.5px">
+          <rect x="63.5" y="59" width="12" height="9" rx="3" fill="#d97706"/>
+          <rect x="68" y="61" width="4" height="3" rx="1.5" fill="#fff8e1" opacity="0.7"/>
+        </g>
+        <g class="eye-r" style="transform-origin:100.5px 63.5px">
+          <rect x="94.5" y="59" width="12" height="9" rx="3" fill="#d97706"/>
+          <rect x="99" y="61" width="4" height="3" rx="1.5" fill="#fff8e1" opacity="0.7"/>
+        </g>
+        <!-- mouth -->
+        <rect x="64" y="82" width="42" height="9" rx="4.5" fill="rgba(217,119,6,0.08)" stroke="rgba(217,119,6,0.3)" stroke-width="1.5"/>
+        <circle cx="72"  cy="86.5" r="2.2" fill="#16a34a" opacity="0.85"/>
+        <circle cx="79"  cy="86.5" r="2.2" fill="#f59e0b" opacity="0.9"/>
+        <circle cx="86"  cy="86.5" r="2.2" fill="#d97706" opacity="0.95"/>
+        <circle cx="93"  cy="86.5" r="2.2" fill="#f59e0b" opacity="0.9"/>
+        <circle cx="100" cy="86.5" r="2.2" fill="#16a34a" opacity="0.85"/>
+        <!-- neck -->
+        <rect x="78" y="98" width="14" height="10" rx="4" fill="#fff8e1" stroke="rgba(217,119,6,0.3)" stroke-width="1.5"/>
+        <!-- body -->
+        <rect x="44" y="108" width="82" height="62" rx="16" fill="#fffbf0" stroke="#d97706" stroke-width="2"/>
+        <rect x="52" y="114" width="66" height="6" rx="3" fill="rgba(251,191,36,0.1)"/>
+        <rect x="64" y="120" width="42" height="32" rx="8" fill="rgba(217,119,6,0.06)" stroke="rgba(217,119,6,0.22)" stroke-width="1.5"/>
+        <circle cx="74"  cy="131" r="3.5" fill="#d97706" opacity="0.9"/>
+        <circle cx="85"  cy="131" r="3.5" fill="#f59e0b"/>
+        <circle cx="96"  cy="131" r="3.5" fill="#d97706" opacity="0.9"/>
+        <rect x="70" y="140" width="30" height="5" rx="2.5" fill="rgba(217,119,6,0.1)" stroke="rgba(217,119,6,0.22)" stroke-width="1"/>
+        <rect x="70" y="140" width="18" height="5" rx="2.5" fill="rgba(217,119,6,0.5)"/>
+        <!-- left arm -->
+        <g class="arm-l">
+          <rect x="25" y="108" width="19" height="42" rx="9.5" fill="#fffbf0" stroke="rgba(217,119,6,0.6)" stroke-width="2"/>
+          <rect x="29" y="114" width="11" height="7" rx="3.5" fill="rgba(217,119,6,0.1)"/>
+          <ellipse cx="34.5" cy="157" rx="8.5" ry="6.5" fill="#fff8e1" stroke="#d97706" stroke-width="2"/>
+          <line x1="30" y1="155" x2="39" y2="159" stroke="#d97706" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="30" y1="159" x2="39" y2="155" stroke="#d97706" stroke-width="1.8" stroke-linecap="round"/>
+        </g>
+        <!-- right arm -->
+        <g class="arm-r">
+          <rect x="126" y="108" width="19" height="42" rx="9.5" fill="#fffbf0" stroke="rgba(217,119,6,0.6)" stroke-width="2"/>
+          <rect x="130" y="114" width="11" height="7" rx="3.5" fill="rgba(217,119,6,0.1)"/>
+          <ellipse cx="135.5" cy="157" rx="8.5" ry="6.5" fill="#fff8e1" stroke="#d97706" stroke-width="2"/>
+          <circle cx="135.5" cy="157" r="3" fill="rgba(217,119,6,0.15)" stroke="#d97706" stroke-width="1.5"/>
+        </g>
+        <!-- legs & feet -->
+        <rect x="60" y="170" width="19" height="21" rx="7.5" fill="#fffbf0" stroke="rgba(217,119,6,0.45)" stroke-width="1.5"/>
+        <rect x="91" y="170" width="19" height="21" rx="7.5" fill="#fffbf0" stroke="rgba(217,119,6,0.45)" stroke-width="1.5"/>
+        <rect x="56" y="185" width="27" height="9"  rx="4.5" fill="#fff8e1" stroke="#d97706" stroke-width="1.5"/>
+        <rect x="87" y="185" width="27" height="9"  rx="4.5" fill="#fff8e1" stroke="#d97706" stroke-width="1.5"/>
+        <ellipse cx="85" cy="196" rx="45" ry="4" fill="rgba(217,119,6,0.08)"/>
+      </svg>
+    </div>
+
+    <!-- Badge -->
+    <div class="badge"><span class="bdot"></span>Maintenance Mode</div>
+
+    <!-- Heading -->
+    <h1 class="heading">We'll Be <em>Back Soon</em></h1>
+
+    <p class="sub">
+      BHT is currently down for scheduled maintenance.<br>
+      We're improving things — won't be long!
+    </p>
+
+    <div class="divider"></div>
+
+    <!-- Chips -->
+    <div class="chips">
+      <div class="chip"><span class="dot dot-a"></span>Maintenance Active</div>
+      <div class="chip"><span class="dot dot-g"></span>Data Secure</div>
+      <div class="chip"><span class="dot dot-y"></span>Almost Ready</div>
+    </div>
+
+    <!-- Icons -->
+    <div class="icon-row">
+      <button class="ibtn" title="Email">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </button>
+      <button class="ibtn" title="Twitter / X">
+        <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </button>
+      <button class="ibtn" title="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </button>
+      <button class="ibtn" title="Notify me">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      </button>
+      <button class="ibtn" title="Share">
+        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <p class="footer">© 2025 <b>BHT</b> — Be Honest and True &nbsp;·&nbsp; All rights reserved</p>
 
-  /* ═══════════════════════════════════
-     POSTS FEED
-     ═══════════════════════════════════ */
-  function PostsFeed({ posts, loading, uid, onReact, onOpenPost, onWritePost }) {
-    const [search, setSearch] = useState("");
-    const filtered = posts.filter(p =>
-      !search || p.content?.toLowerCase().includes(search.toLowerCase()) ||
-      p.name?.toLowerCase().includes(search.toLowerCase()) ||
-      p.city?.toLowerCase().includes(search.toLowerCase())
-    );
-
-    return (
-      <div style={{ paddingTop:40 }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:24, flexWrap:"wrap", gap:12 }}>
-          <h2 style={{ fontSize:28, fontWeight:800, letterSpacing:"-0.02em" }}>All Posts</h2>
-          <button className="btn-primary" style={{ fontSize:13, padding:"9px 20px" }} onClick={onWritePost}>+ New Post</button>
-        </div>
-
-        <input className="inp" placeholder="🔍  Search posts..." value={search} onChange={e => setSearch(e.target.value)} style={{ marginBottom:24 }} />
-
-        {loading && (
-          <div style={{ textAlign:"center", padding:60, color:"var(--muted)" }}>
-            <div className="spin" style={{ width:36, height:36, border:"3px solid var(--border)", borderTopColor:"var(--teal)", borderRadius:"50%", margin:"0 auto 16px" }}></div>
-            Loading posts...
-          </div>
-        )}
-
-        {!loading && filtered.length === 0 && (
-          <div style={{ textAlign:"center", padding:60, color:"var(--muted)" }}>
-            <div style={{ fontSize:48, marginBottom:16 }}>🌙</div>
-            <p>No posts yet. Be the first to share something.</p>
-          </div>
-        )}
-
-        {filtered.map((p, i) => (
-          <PostCard key={p.id} post={p} uid={uid} onReact={onReact} onClick={() => onOpenPost(p)} style={{ animationDelay:`${i*0.07}s` }} />
-        ))}
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     POST CARD
-     ═══════════════════════════════════ */
-  function PostCard({ post, uid, onReact, onClick, preview, style: extraStyle }) {
-    const reactions = post.reactions || { like:[], haha:[], heart:[] };
-    const myReact = uid ? (reactions.like?.includes(uid) ? "like" : reactions.haha?.includes(uid) ? "haha" : reactions.heart?.includes(uid) ? "heart" : null) : null;
-    const totalReacts = (reactions.like?.length||0) + (reactions.haha?.length||0) + (reactions.heart?.length||0);
-
-    const lines = post.content?.split('\n') || [];
-
-    return (
-      <div className="glass post-card" style={{ marginBottom:16, padding:20, cursor:onClick?"pointer":"default", ...extraStyle }} onClick={onClick}>
-        {/* Header */}
-        <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:14 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <div style={{ width:42, height:42, borderRadius:12, background: post.isAdminPost ? "linear-gradient(135deg,#7c3aed,#db2777)" : "rgba(217,119,6,0.08)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:24, flexShrink:0, border: post.isAdminPost ? "none" : "1.5px solid rgba(217,119,6,0.15)" }}>
-              {post.isAdminPost ? "✦" : post.avatar || post.name?.charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <div style={{ fontWeight:700, fontSize:15, display:"flex", alignItems:"center", gap:6 }}>
-                {post.isAdminPost ? (
-                  <span style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", color:"white", padding:"2px 10px", borderRadius:999, fontSize:12, fontWeight:800, letterSpacing:"0.04em" }}>✦ BHT Team</span>
-                ) : (
-                  <span>{post.name}</span>
-                )}
-              </div>
-              <div style={{ fontSize:12, color:"var(--muted)", marginTop:2 }}>{timeAgo(post.timestamp)}</div>
-            </div>
-          </div>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            {post.city && (
-              <div className="city-badge">
-                <span>📍</span>{post.city}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div style={{ fontSize:15, lineHeight:1.75, color:"var(--text)", marginBottom:16 }}>
-          {(preview ? lines.slice(0,4) : lines).map((line, i) => (
-            <p key={i} style={{ minHeight:"1.75em" }}>{line || <br/>}</p>
-          ))}
-          {preview && lines.length > 4 && <p style={{ color:"var(--teal)", fontSize:13, marginTop:6 }}>Read more →</p>}
-        </div>
-
-        {/* Footer */}
-        <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-          {[{type:"like",emoji:"👍"},{type:"haha",emoji:"😂"},{type:"heart",emoji:"❤️"}].map(r => (
-            <button key={r.type} className={`react-btn ${myReact===r.type?`active-${r.type}`:""}`}
-              onClick={e => { e.stopPropagation(); onReact(post.id, r.type); }}>
-              {r.emoji} {reactions[r.type]?.length || 0}
-            </button>
-          ))}
-          <div style={{ marginLeft:"auto", display:"flex", alignItems:"center", gap:14 }}>
-            <span className="view-badge">👁️ {formatNum(post.viewCount||0)}</span>
-            <span className="view-badge">💬 {formatNum(post.commentCount||0)}</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     CREATE POST MODAL
-     ═══════════════════════════════════ */
-  function CreatePostModal({ onClose, onSubmit }) {
-    const AVATARS = [
-      "😤","😏","🤙","💀","🔥","👊","😈","🤑","😎","🥷",
-      "🐍","🦈","🐺","🦊","🦁","🐯","🦅","🦂","🐉","🦖",
-      "👾","🤖","💣","⚡","🌪","💥","🎯","🃏","🎰","🎭",
-      "🥊","🏴","⚔️","🗡️","🔱","☠️","🎪","🤿","🛸","🪖",
-      "🧊","🌑","🌊","🌋","⛈️","🌀","🌙","💫","🕳️","🪐",
-      "😂","😍","🥺","😭","😡","🤔","😴","🤯","😱","🥶",
-      "🌈","🎵","🎮","🏆","💎","👑","🌸","🦋","🐸","🍕"
-    ];
-    const [step, setStep] = useState(1); // 1=name, 2=content
-    const [name, setName] = useState("");
-    const [avatar, setAvatar] = useState("🦊");
-    const [content, setContent] = useState("");
-    const [city, setCity] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [err, setErr] = useState("");
-
-    const handleSubmit = async () => {
-      const trimmedName = name.trim();
-      if (!trimmedName || trimmedName.length < 4) { setErr("الاسم مطلوب ويجب أن يكون 4 أحرف على الأقل!"); return; }
-      if (!avatar.trim()) { setErr("Please pick or type an emoji!"); return; }
-      if (!content.trim()) { setErr("Write something!"); return; }
-      setLoading(true);
-      await onSubmit(trimmedName, content, city, avatar);
-      setLoading(false);
-      onClose();
-    };
-
-    return (
-      <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-        <div className="glass" style={{ width:"100%", maxWidth:420, borderRadius:18, padding:24, position:"relative" }}>
-          <button onClick={onClose} style={{ position:"absolute", top:16, right:16, background:"none", border:"none", color:"var(--muted)", fontSize:22, cursor:"pointer", lineHeight:1 }}>×</button>
-
-          <h2 style={{ fontSize:20, fontWeight:800, marginBottom:4 }}>
-            {step===1 ? "👤 Who are you?" : "✍️ What's on your mind?"}
-          </h2>
-          <p style={{ color:"var(--muted)", fontSize:13, marginBottom:20 }}>
-            {step===1 ? "Choose a name — min 4 characters, required" : "Write freely. No one knows it's you."}
-          </p>
-
-          {step === 1 ? (
-            <>
-              <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:10 }}>🎭 Your Emoji (required)</label>
-
-              {/* Horizontal scrollable emoji strip with arrows */}
-              <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:16 }}>
-                {/* Selected preview */}
-                <div style={{ width:44, height:44, borderRadius:12, border:`2px solid ${avatar ? "var(--teal)" : "var(--coral)"}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:24, background:"rgba(255,255,255,0.7)", flexShrink:0, transition:"border-color 0.2s" }}>
-                  {avatar || "?"}
-                </div>
-
-                {/* Left arrow */}
-                <button onClick={() => {
-                  const el = document.getElementById("emoji-strip");
-                  if (el) el.scrollBy({ left: -120, behavior:"smooth" });
-                }} style={{ width:30, height:30, borderRadius:9, border:"none", background:"linear-gradient(135deg,#d97706,#f59e0b)", cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, color:"white", fontWeight:900, boxShadow:"0 2px 8px rgba(217,119,6,0.35)", transition:"transform 0.1s, box-shadow 0.1s" }}
-                  onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow="0 4px 14px rgba(217,119,6,0.5)"}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow="0 2px 8px rgba(217,119,6,0.35)"}}>‹</button>
-
-                {/* Strip */}
-                <div id="emoji-strip" style={{ flex:1, overflowX:"auto", display:"flex", gap:4, padding:"4px 0", scrollbarWidth:"none", msOverflowStyle:"none" }}
-                  className="emoji-strip">
-                  {AVATARS.map(a => (
-                    <div key={a}
-                      onClick={() => setAvatar(a)}
-                      style={{ fontSize:22, cursor:"pointer", padding:"5px 6px", borderRadius:9, flexShrink:0,
-                        background: avatar===a ? "rgba(217,119,6,0.15)" : "transparent",
-                        border: avatar===a ? "1.5px solid var(--teal)" : "1.5px solid transparent",
-                        transition:"all 0.15s", userSelect:"none"
-                      }}
-                      onMouseEnter={e => { if(avatar!==a) e.currentTarget.style.background="rgba(0,0,0,0.05)"; }}
-                      onMouseLeave={e => { if(avatar!==a) e.currentTarget.style.background="transparent"; }}
-                    >{a}</div>
-                  ))}
-                </div>
-
-                {/* Right arrow */}
-                <button onClick={() => {
-                  const el = document.getElementById("emoji-strip");
-                  if (el) el.scrollBy({ left: 120, behavior:"smooth" });
-                }} style={{ width:30, height:30, borderRadius:9, border:"none", background:"linear-gradient(135deg,#d97706,#f59e0b)", cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, color:"white", fontWeight:900, boxShadow:"0 2px 8px rgba(217,119,6,0.35)", transition:"transform 0.1s, box-shadow 0.1s" }}
-                  onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow="0 4px 14px rgba(217,119,6,0.5)"}}
-                  onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow="0 2px 8px rgba(217,119,6,0.35)"}}>›</button>
-              </div>
-
-              <input className="inp" placeholder="Your name (required, min 4 chars)..." value={name} onChange={e => { setName(e.target.value); setErr(""); }} maxLength={30} style={{ marginTop:8 }} />
-              {err && <p style={{ color:"var(--coral)", fontSize:13, marginTop:6 }}>{err}</p>}
-              <div style={{ fontSize:11, color:"var(--coral)", marginTop:6, marginBottom:16 }}>⚠️ Name required (min 4 chars) — no anonymous posting</div>
-
-              <label style={{ display:"block", marginBottom:8, fontSize:13, color:"var(--muted)", fontWeight:600 }}>📍 Your City</label>
-              <input className="inp" placeholder="Enter your city..." value={city} onChange={e => setCity(e.target.value)} maxLength={40} style={{ marginBottom:20 }} />
-
-              <button className="btn-primary" style={{ width:"100%" }} onClick={() => {
-                if (!name.trim() || name.trim().length < 4) { setErr("Name required (min 4 characters)!"); return; }
-                if (!avatar.trim()) { setErr("Please pick or type an emoji!"); return; }
-                setErr(""); setStep(2);
-              }}>
-                Continue →
-              </button>
-            </>
-          ) : (
-            <>
-              <textarea className="inp" placeholder="Share your thoughts, confession, feeling... You can use Enter to make paragraphs." value={content} onChange={e => { setContent(e.target.value); setErr(""); }} style={{ minHeight:180 }} />
-              {err && <p style={{ color:"var(--coral)", fontSize:13, marginTop:6 }}>{err}</p>}
-
-              <div style={{ fontSize:12, color:"var(--muted)", marginTop:8, marginBottom:24 }}>
-                Tip: Press Enter to create paragraphs ↵
-              </div>
-
-              <div style={{ display:"flex", gap:10 }}>
-                <button onClick={() => setStep(1)} style={{ flex:1, padding:12, border:"1px solid var(--border)", borderRadius:10, background:"transparent", color:"var(--muted)", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>← Back</button>
-                <button className="btn-primary" style={{ flex:2 }} onClick={handleSubmit} disabled={loading}>
-                  {loading ? "Posting..." : "🚀 Publish"}
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     POST DETAIL MODAL
-     ═══════════════════════════════════ */
-  function PostDetailModal({ post, uid, onClose, onReact, isAdmin, onDelete }) {
-    const [comments, setComments] = useState([]);
-    const [commentText, setCommentText] = useState("");
-    const [commentName, setCommentName] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
-    const [replyTo, setReplyTo] = useState(null); // { id, name }
-    const [mentionQuery, setMentionQuery] = useState(null); // string after @
-    const [mentionPos, setMentionPos] = useState(0); // caret position where @ was typed
-    const inputRef = React.useRef(null);
-    const dropdownRef = React.useRef(null);
-
-    const reactions = post.reactions || { like:[], haha:[], heart:[] };
-    const myReact = uid ? (reactions.like?.includes(uid) ? "like" : reactions.haha?.includes(uid) ? "haha" : reactions.heart?.includes(uid) ? "heart" : null) : null;
-    const lines = post.content?.split('\n') || [];
-
-    // All names available for mention — BHT Team always at top, then post author, then commenters
-    const mentionableNames = React.useMemo(() => {
-      const seen = new Set();
-      const names = ["BHT Team"];
-      seen.add("BHT Team");
-      if (post.name && !seen.has(post.name)) { names.push(post.name); seen.add(post.name); }
-      comments.filter(c => c.name).forEach(c => {
-        if (!seen.has(c.name)) { names.push(c.name); seen.add(c.name); }
-      });
-      return names;
-    }, [comments, post.name]);
-
-    // Filtered mention suggestions
-    const mentionSuggestions = React.useMemo(() => {
-      if (mentionQuery === null) return [];
-      const q = mentionQuery.toLowerCase();
-      return mentionableNames.filter(n => n.toLowerCase().startsWith(q));
-    }, [mentionQuery, mentionableNames]);
-
-    useEffect(() => {
-      if (!firebaseReady || !db) {
-        setComments([
-          { id:"c1", name:"Luna", text:"This is so relatable 🌙", timestamp:{ toDate:()=>new Date(Date.now()-1800000) }, isAdmin:false },
-          { id:"c2", name:"BHT Team", text:"Thank you for sharing ✨", timestamp:{ toDate:()=>new Date(Date.now()-900000) }, isAdmin:true }
-        ]);
-        setLoading(false);
-        return;
-      }
-      const unsub = db.collection("posts").doc(post.id).collection("comments")
-        .orderBy("timestamp", "asc").onSnapshot(snap => {
-          setComments(snap.docs.map(d => ({ id:d.id, ...d.data() })));
-          setLoading(false);
-        }, () => setLoading(false));
-      return () => unsub();
-    }, [post.id]);
-
-    // Detect @ — support multi-word names by matching everything after @ until cursor
-    const handleCommentInput = (e) => {
-      const val = e.target.value;
-      const cursor = e.target.selectionStart;
-      setCommentText(val);
-      const textBefore = val.slice(0, cursor);
-      // Match @ and everything after it up to cursor (no other @ allowed)
-      const match = textBefore.match(/@([^@]*)$/);
-      if (match) {
-        const query = match[1];
-        // If query exactly matches a name + space → already inserted, close dropdown
-        const done = mentionableNames.some(n => query === n + " ");
-        if (!done) {
-          setMentionQuery(query);
-          setMentionPos(cursor - match[0].length);
-        } else {
-          setMentionQuery(null);
-        }
-      } else {
-        setMentionQuery(null);
-      }
-    };
-
-    // Insert full name (including spaces) replacing @query
-    const insertMention = (name) => {
-      const before = commentText.slice(0, mentionPos);
-      const afterStart = mentionPos + 1 + (mentionQuery?.length || 0);
-      const after = commentText.slice(afterStart);
-      const newText = before + "@" + name + " " + after;
-      setCommentText(newText);
-      setMentionQuery(null);
-      setTimeout(() => {
-        if (inputRef.current) {
-          const pos = before.length + 1 + name.length + 1;
-          inputRef.current.focus();
-          inputRef.current.setSelectionRange(pos, pos);
-        }
-      }, 0);
-    };
-
-    // Handle reply — prefill @FullName
-    const handleReply = (c) => {
-      setReplyTo({ id: c.id, name: c.name });
-      const prefix = "@" + c.name + " ";
-      setCommentText(prefix);
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus();
-          inputRef.current.setSelectionRange(prefix.length, prefix.length);
-        }
-      }, 50);
-    };
-
-    // Render comment text — highlight FULL name (incl. spaces) in blue/purple
-    const renderCommentText = (text) => {
-      if (!text || mentionableNames.length === 0) return <span>{text}</span>;
-      // Sort names longest first to avoid partial matches
-      const sorted = [...mentionableNames].sort((a, b) => b.length - a.length);
-      const escaped = sorted.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-      const pattern = new RegExp(`(@(?:${escaped.join('|')}))`, 'g');
-      const parts = text.split(pattern);
-      return parts.map((part, i) => {
-        if (part.startsWith("@") && mentionableNames.some(n => part === "@" + n)) {
-          const isBHT = part === "@BHT Team";
-          return (
-            <span key={i} style={{
-              color: isBHT ? "#7c3aed" : "#2563eb",
-              fontWeight: 800,
-              background: isBHT ? "rgba(124,58,237,0.09)" : "rgba(37,99,235,0.09)",
-              borderRadius: 4, padding: "0 3px"
-            }}>{part}</span>
-          );
-        }
-        return <span key={i}>{part}</span>;
-      });
-    };
-
-    const submitComment = async () => {
-      const trimmedName = commentName.trim();
-      const trimmedText = commentText.trim();
-      if (!trimmedName || trimmedName.length < 4) {
-        alert("Name is required (min 4 characters)!");
-        return;
-      }
-      if (!trimmedText) return;
-      // No duplicate names in same post
-      const duplicate = comments.find(c => !c.isAdmin && c.name?.toLowerCase() === trimmedName.toLowerCase());
-      if (duplicate) {
-        alert(`The name "${trimmedName}" is already used in this post. Please choose a different name.`);
-        return;
-      }
-      setSubmitting(true);
-      const data = {
-        name: trimmedName,
-        text: trimmedText,
-        uid: uid || null,
-        replyToId: replyTo?.id || null,
-        replyToName: replyTo?.name || null,
-        timestamp: firebaseReady && db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
-        isAdmin: false
-      };
-      if (firebaseReady && db) {
-        await db.collection("posts").doc(post.id).collection("comments").add(data);
-        const postUpdate = { commentCount: firebase.firestore.FieldValue.increment(1) };
-        if (uid) postUpdate.commenterUids = firebase.firestore.FieldValue.arrayUnion(uid);
-        await db.collection("posts").doc(post.id).update(postUpdate);
-        if (uid) {
-          const commenterName = trimmedName;
-          const preview = trimmedText.slice(0, 120);
-          const notifBase = {
-            type: "new_comment", postId: post.id,
-            postAuthorName: post.name || "Anonymous",
-            fromName: commenterName, preview,
-            ts: firebase.firestore.FieldValue.serverTimestamp(), read: false
-          };
-          const toNotify = new Set();
-          if (post.authorUid && post.authorUid !== uid) toNotify.add(post.authorUid);
-          if (Array.isArray(post.commenterUids)) {
-            post.commenterUids.forEach(cu => { if (cu && cu !== uid) toNotify.add(cu); });
-          }
-          for (const toUid of toNotify) {
-            try { await db.collection("notifs").add({ ...notifBase, toUid }); } catch(e) {}
-          }
-        }
-      } else {
-        setComments(prev => [...prev, { id:"c_"+Date.now(), ...data, timestamp:{ toDate:()=>new Date() } }]);
-      }
-      setCommentText(""); setCommentName(""); setReplyTo(null); setSubmitting(false);
-    };
-
-    const deleteComment = async (cid) => {
-      if (!window.confirm("Delete this comment?")) return;
-      if (firebaseReady && db) {
-        await db.collection("posts").doc(post.id).collection("comments").doc(cid).delete();
-        await db.collection("posts").doc(post.id).update({ commentCount: firebase.firestore.FieldValue.increment(-1) });
-      } else {
-        setComments(prev => prev.filter(c => c.id !== cid));
-      }
-    };
-
-    return (
-      <div className="modal-bg" style={{ alignItems:"flex-start", paddingTop:32 }} onClick={e => e.target === e.currentTarget && onClose()}>
-        <div className="glass" style={{ width:"100%", maxWidth:480, borderRadius:18, maxHeight:"82vh", overflow:"auto", position:"relative" }}>
-          {/* Header */}
-          <div style={{ padding:"20px 24px 0", position:"sticky", top:0, background:"rgba(255,251,240,0.97)", backdropFilter:"blur(12px)", zIndex:10, borderBottom:"1px solid var(--border)", marginBottom:0 }}>
-            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ width:40, height:40, borderRadius:12, background: post.isAdminPost ? "linear-gradient(135deg,#7c3aed,#db2777)" : "rgba(217,119,6,0.08)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:800, fontSize:22, border: post.isAdminPost ? "none" : "1.5px solid rgba(217,119,6,0.15)" }}>
-                  {post.isAdminPost ? "✦" : post.avatar || post.name?.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div style={{ fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
-                    {post.isAdminPost ? (
-                      <span style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", color:"white", padding:"2px 10px", borderRadius:999, fontSize:12, fontWeight:800, letterSpacing:"0.04em" }}>✦ BHT Team</span>
-                    ) : (
-                      <span>{post.name}</span>
-                    )}
-                  </div>
-                  <div style={{ fontSize:12, color:"var(--muted)" }}>{timeAgo(post.timestamp)} · {post.city}</div>
-                </div>
-              </div>
-              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                {isAdmin && (
-                  <button onClick={() => onDelete(post.id)} style={{ background:"rgba(255,107,107,0.1)", border:"1px solid rgba(255,107,107,0.3)", color:"var(--coral)", padding:"5px 12px", borderRadius:8, cursor:"pointer", fontSize:12, fontFamily:"DM Sans,sans-serif" }}>
-                    🗑 Delete
-                  </button>
-                )}
-                <button onClick={onClose} style={{ background:"rgba(255,255,255,0.05)", border:"none", color:"var(--muted)", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:18 }}>×</button>
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div style={{ padding:"20px 24px" }}>
-            <div style={{ fontSize:16, lineHeight:1.8, marginBottom:24 }}>
-              {lines.map((line, i) => <p key={i} style={{ minHeight:"1.8em" }}>{line || <br/>}</p>)}
-            </div>
-
-            {/* Reactions */}
-            <div style={{ display:"flex", gap:10, marginBottom:24, flexWrap:"wrap" }}>
-              {[{type:"like",emoji:"👍"},{type:"haha",emoji:"😂"},{type:"heart",emoji:"❤️"}].map(r => (
-                <button key={r.type} className={`react-btn ${myReact===r.type?`active-${r.type}`:""}`}
-                  onClick={() => onReact(post.id, r.type)} style={{ fontSize:14, padding:"7px 16px" }}>
-                  {r.emoji} {reactions[r.type]?.length || 0}
-                </button>
-              ))}
-              <span className="view-badge" style={{ marginLeft:"auto", alignSelf:"center" }}>👁️ {formatNum(post.viewCount||0)} views</span>
-            </div>
-
-            <div className="divider"></div>
-
-            {/* Comments */}
-            <h3 style={{ fontWeight:700, fontSize:16, marginBottom:16 }}>Comments ({comments.length})</h3>
-
-            {loading ? (
-              <div style={{ textAlign:"center", padding:20, color:"var(--muted)", fontSize:14 }}>Loading...</div>
-            ) : comments.length === 0 ? (
-              <div style={{ textAlign:"center", padding:20, color:"var(--muted)", fontSize:14 }}>
-                Be the first to comment 👇
-              </div>
-            ) : (
-              <div style={{ marginBottom:20 }}>
-                {comments.map(c => (
-                  <div key={c.id} style={{ marginBottom:12 }}>
-                    {/* Reply context line */}
-                    {c.replyToName && (
-                      <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:4, marginLeft:8 }}>
-                        <div style={{ width:14, height:10, borderLeft:"2px solid #93c5fd", borderBottom:"2px solid #93c5fd", borderRadius:"0 0 0 4px", flexShrink:0 }} />
-                        <span style={{ fontSize:11, color:"var(--muted)" }}>Replying to <span style={{ color:"#2563eb", fontWeight:700 }}>@{c.replyToName}</span></span>
-                      </div>
-                    )}
-                    <div className="comment-item" style={{ position:"relative" }}>
-                      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:4 }}>
-                        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                          <span style={{ fontWeight:700, fontSize:13 }}>
-                            {c.isAdmin ? (
-                              <span style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", color:"white", padding:"1px 8px", borderRadius:999, fontSize:11, fontWeight:800, letterSpacing:"0.04em" }}>✦ BHT Team</span>
-                            ) : (
-                              <span>{c.name}</span>
-                            )}
-                          </span>
-                          <span style={{ fontSize:11, color:"var(--muted)" }}>{timeAgo(c.timestamp)}</span>
-                        </div>
-                        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                          {!c.isAdmin && (
-                            <button
-                              onClick={() => handleReply(c)}
-                              style={{ background:"none", border:"none", color:"#2563eb", cursor:"pointer", fontSize:11, fontWeight:700, fontFamily:"DM Sans,sans-serif", padding:"2px 6px", borderRadius:6, transition:"background 0.15s" }}
-                              onMouseEnter={e => e.target.style.background="rgba(37,99,235,0.08)"}
-                              onMouseLeave={e => e.target.style.background="none"}
-                            >
-                              ↩ Reply
-                            </button>
-                          )}
-                          {isAdmin && (
-                            <button onClick={() => deleteComment(c.id)} style={{ background:"none", border:"none", color:"var(--muted)", cursor:"pointer", fontSize:13, padding:"2px 4px" }}>×</button>
-                          )}
-                        </div>
-                      </div>
-                      <p style={{ fontSize:14, color:"var(--text)", lineHeight:1.6 }}>{renderCommentText(c.text)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Add comment form */}
-            <div style={{ marginTop:16, position:"relative" }}>
-              <input className="inp" placeholder="Your name (required, min 4 chars)" value={commentName} onChange={e => setCommentName(e.target.value)} maxLength={30} style={{ marginBottom:8, fontSize:13 }} />
-
-              {/* Reply indicator */}
-              {replyTo && (
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(37,99,235,0.06)", border:"1px solid rgba(37,99,235,0.15)", borderRadius:8, padding:"5px 10px", marginBottom:6, fontSize:12 }}>
-                  <span style={{ color:"var(--muted)" }}>Replying to <span style={{ color:"#2563eb", fontWeight:700 }}>@{replyTo.name}</span></span>
-                  <button onClick={() => { setReplyTo(null); setCommentText(t => t.replace("@"+replyTo.name+" ","").trim()); }} style={{ background:"none", border:"none", color:"var(--muted)", cursor:"pointer", fontSize:14, lineHeight:1 }}>×</button>
-                </div>
-              )}
-
-              <div style={{ display:"flex", gap:8, position:"relative" }}>
-                <div style={{ flex:1, position:"relative" }}>
-                  <textarea
-                    ref={inputRef}
-                    className="inp"
-                    placeholder="Add a comment... (type @ to mention)"
-                    value={commentText}
-                    onChange={handleCommentInput}
-                    onKeyDown={e => {
-                      if (mentionQuery !== null && mentionSuggestions.length > 0 && e.key === "Tab") {
-                        e.preventDefault();
-                        insertMention(mentionSuggestions[0]);
-                      }
-                      if (e.key === "Enter" && !e.shiftKey && mentionQuery === null) {
-                        e.preventDefault();
-                        submitComment();
-                      }
-                    }}
-                    style={{ width:"100%", minHeight:40, maxHeight:100, resize:"vertical", fontSize:13, boxSizing:"border-box" }}
-                  />
-
-                  {/* @ mention dropdown */}
-                  {mentionQuery !== null && mentionSuggestions.length > 0 && (
-                    <div ref={dropdownRef} style={{
-                      position:"absolute", bottom:"calc(100% + 4px)", left:0, right:0,
-                      background:"white", border:"1px solid rgba(37,99,235,0.2)",
-                      borderRadius:10, overflow:"hidden",
-                      boxShadow:"0 4px 20px rgba(37,99,235,0.15)", zIndex:50
-                    }}>
-                      <div style={{ padding:"6px 10px", fontSize:10, color:"var(--muted)", fontWeight:700, letterSpacing:"0.08em", borderBottom:"1px solid var(--border)", textTransform:"uppercase" }}>
-                        Mention someone
-                      </div>
-                      {mentionSuggestions.map(name => (
-                        <div key={name}
-                          onClick={() => insertMention(name)}
-                          style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 12px", cursor:"pointer", transition:"background 0.12s" }}
-                          onMouseEnter={e => e.currentTarget.style.background="rgba(37,99,235,0.06)"}
-                          onMouseLeave={e => e.currentTarget.style.background="transparent"}
-                        >
-                          <div style={{ width:26, height:26, borderRadius:8, background:"linear-gradient(135deg,#2563eb,#3b82f6)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, color:"white", fontWeight:800, flexShrink:0 }}>
-                            {name.charAt(0).toUpperCase()}
-                          </div>
-                          <span style={{ fontWeight:700, fontSize:13 }}>@{name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <button className="btn-primary" style={{ flexShrink:0, padding:"0 16px", fontSize:13, alignSelf:"flex-end", height:40 }} onClick={submitComment} disabled={submitting}>
-                  {submitting ? "..." : "Send"}
-                </button>
-              </div>
-              <div style={{ fontSize:11, color:"var(--muted)", marginTop:5 }}>Type <strong>@</strong> to mention someone · Enter to send</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     ADMIN COMMENT TAB — with @ mention
-     ═══════════════════════════════════ */
-  function AdminCommentTab({ posts, adminComment, setAdminComment, postAdminComment, ADMIN_DISPLAY_NAME }) {
-    const [mentionQuery, setMentionQuery] = useState(null);
-    const [mentionPos, setMentionPos] = useState(0);
-    const [postCommenters, setPostCommenters] = useState([]);
-    const textRef = React.useRef(null);
-
-    // Load commenters of selected post
-    useEffect(() => {
-      if (!adminComment.postId || !firebaseReady || !db) { setPostCommenters([]); return; }
-      db.collection("posts").doc(adminComment.postId).collection("comments")
-        .orderBy("timestamp","asc").get().then(snap => {
-          const seen = new Set();
-          const names = [];
-          snap.docs.forEach(d => {
-            const n = d.data().name;
-            if (n && !seen.has(n)) { seen.add(n); names.push(n); }
-          });
-          setPostCommenters(names);
-        }).catch(() => setPostCommenters([]));
-    }, [adminComment.postId]);
-
-    // All mentionable: post author + commenters
-    const selectedPost = posts.find(p => p.id === adminComment.postId);
-    const mentionableNames = React.useMemo(() => {
-      const seen = new Set();
-      const names = [];
-      if (selectedPost?.name) { names.push(selectedPost.name); seen.add(selectedPost.name); }
-      postCommenters.forEach(n => { if (!seen.has(n)) { names.push(n); seen.add(n); } });
-      return names;
-    }, [selectedPost, postCommenters]);
-
-    const mentionSuggestions = React.useMemo(() => {
-      if (mentionQuery === null) return [];
-      const q = mentionQuery.toLowerCase();
-      return mentionableNames.filter(n => n.toLowerCase().startsWith(q));
-    }, [mentionQuery, mentionableNames]);
-
-    const handleInput = (e) => {
-      const val = e.target.value;
-      const cursor = e.target.selectionStart;
-      setAdminComment(a => ({...a, text: val}));
-      const textBefore = val.slice(0, cursor);
-      const match = textBefore.match(/@([^@]*)$/);
-      if (match) {
-        const query = match[1];
-        const done = mentionableNames.some(n => query === n + " ");
-        if (!done) { setMentionQuery(query); setMentionPos(cursor - match[0].length); }
-        else setMentionQuery(null);
-      } else {
-        setMentionQuery(null);
-      }
-    };
-
-    const insertMention = (name) => {
-      const text = adminComment.text;
-      const before = text.slice(0, mentionPos);
-      const after = text.slice(mentionPos + 1 + (mentionQuery?.length || 0));
-      const newText = before + "@" + name + " " + after;
-      setAdminComment(a => ({...a, text: newText}));
-      setMentionQuery(null);
-      setTimeout(() => {
-        if (textRef.current) {
-          const pos = before.length + 1 + name.length + 1;
-          textRef.current.focus();
-          textRef.current.setSelectionRange(pos, pos);
-        }
-      }, 0);
-    };
-
-    return (
-      <div>
-        <p style={{ color:"var(--muted)", fontSize:13, marginBottom:20 }}>
-          Comment on a post as <strong style={{ color:"white" }}>{ADMIN_DISPLAY_NAME}</strong> — type <strong style={{ color:"#f59e0b" }}>@</strong> to mention users.
-        </p>
-
-        <div style={{ marginBottom:16 }}>
-          <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>Select Post</label>
-          <select className="inp" value={adminComment.postId} onChange={e => setAdminComment(a=>({...a,postId:e.target.value,text:""}))}>
-            <option value="">— Choose a post —</option>
-            {posts.map(p => <option key={p.id} value={p.id}>{p.name}: {p.content?.slice(0,60)}...</option>)}
-          </select>
-        </div>
-
-        {/* Show commenters as quick-tag chips */}
-        {mentionableNames.length > 0 && (
-          <div style={{ marginBottom:12 }}>
-            <div style={{ fontSize:11, color:"var(--muted)", fontWeight:600, marginBottom:6, textTransform:"uppercase", letterSpacing:"0.08em" }}>Tag someone:</div>
-            <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-              {mentionableNames.map(name => (
-                <button key={name} onClick={() => {
-                  const cur = adminComment.text;
-                  const mention = "@" + name + " ";
-                  const newText = cur.endsWith(" ") || cur === "" ? cur + mention : cur + " " + mention;
-                  setAdminComment(a => ({...a, text: newText}));
-                  setTimeout(() => textRef.current?.focus(), 0);
-                }} style={{
-                  padding:"3px 10px", borderRadius:999,
-                  border:"1px solid rgba(245,158,11,0.35)",
-                  background:"rgba(245,158,11,0.08)",
-                  color:"#d97706", fontSize:12, fontWeight:700,
-                  cursor:"pointer", fontFamily:"DM Sans,sans-serif",
-                  transition:"all 0.15s"
-                }}
-                  onMouseEnter={e=>{e.currentTarget.style.background="rgba(245,158,11,0.18)"}}
-                  onMouseLeave={e=>{e.currentTarget.style.background="rgba(245,158,11,0.08)"}}
-                >@{name}</button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div style={{ marginBottom:16, position:"relative" }}>
-          <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>Comment</label>
-          <textarea
-            ref={textRef}
-            className="inp"
-            placeholder="Write your admin comment... (type @ to mention)"
-            value={adminComment.text}
-            onChange={handleInput}
-            style={{ minHeight:100 }}
-          />
-          {/* @ mention dropdown */}
-          {mentionQuery !== null && mentionSuggestions.length > 0 && (
-            <div style={{
-              position:"absolute", bottom:"calc(100% + 4px)", left:0, right:0,
-              background:"#1a1a2e", border:"1px solid rgba(245,158,11,0.25)",
-              borderRadius:10, overflow:"hidden",
-              boxShadow:"0 4px 20px rgba(0,0,0,0.3)", zIndex:50
-            }}>
-              <div style={{ padding:"5px 10px", fontSize:10, color:"var(--muted)", fontWeight:700, letterSpacing:"0.08em", borderBottom:"1px solid rgba(255,255,255,0.06)", textTransform:"uppercase" }}>
-                Mention
-              </div>
-              {mentionSuggestions.map(name => (
-                <div key={name} onClick={() => insertMention(name)}
-                  style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 12px", cursor:"pointer", transition:"background 0.12s" }}
-                  onMouseEnter={e=>e.currentTarget.style.background="rgba(245,158,11,0.08)"}
-                  onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                  <div style={{ width:26, height:26, borderRadius:8, background:"linear-gradient(135deg,#d97706,#f59e0b)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, color:"white", fontWeight:800, flexShrink:0 }}>
-                    {name.charAt(0).toUpperCase()}
-                  </div>
-                  <span style={{ fontWeight:700, fontSize:13, color:"white" }}>@{name}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <button className="btn-primary" disabled={!adminComment.postId||!adminComment.text.trim()} onClick={postAdminComment}>
-          ✦ Post as Admin
-        </button>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     ADMIN PANEL
-     ═══════════════════════════════════ */
-  function AdminPanel({ posts, authed, onAuth, onClose, setPosts, showToast, db, firebaseReady }) {
-    const [email, setEmail] = useState("");
-    const [pw, setPw] = useState("");
-    const [err, setErr] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState("posts");
-    const [editingViews, setEditingViews] = useState(null);
-    const [newViewCount, setNewViewCount] = useState(0);
-    const [adminComment, setAdminComment] = useState({ postId:"", text:"" });
-    const [adminPost, setAdminPost] = useState({ content:"", city:"" });
-    const [adminPostLoading, setAdminPostLoading] = useState(false);
-    const [allComments, setAllComments] = useState({});
-
-    const handleAuth = async () => {
-      if (!email.trim() || !pw.trim()) { setErr("Enter email and password"); return; }
-      setLoading(true); setErr("");
-      // Try Firebase Auth first
-      if (firebaseReady && auth) {
-        try {
-          await auth.signInWithEmailAndPassword(email.trim(), pw);
-          onAuth(); setLoading(false); return;
-        } catch(e) {
-          // Fallback: check against hardcoded admin creds
-        }
-      }
-      // Fallback: email + password match
-      if (email.trim() === ADMIN_EMAIL && pw === ADMIN_PASSWORD) { onAuth(); }
-      else { setErr("Wrong email or password"); }
-      setLoading(false);
-    };
-
-    const deletePost = async (pid) => {
-      if (!window.confirm("Delete this post?")) return;
-      if (firebaseReady && db) await db.collection("posts").doc(pid).delete();
-      else setPosts(prev => prev.filter(p => p.id !== pid));
-      showToast("Post deleted");
-    };
-
-    const updateViewCount = async (pid) => {
-      if (firebaseReady && db) await db.collection("posts").doc(pid).update({ viewCount: Number(newViewCount) });
-      else setPosts(prev => prev.map(p => p.id===pid ? {...p, viewCount:Number(newViewCount)} : p));
-      setEditingViews(null);
-      showToast("Views updated");
-    };
-
-    const updateReactionCount = async (pid, type, count) => {
-      // Manipulate reaction array to match desired count (pad with fake IDs)
-      const arr = Array.from({length: Math.max(0, Number(count))}, (_, i) => `admin_pad_${i}`);
-      if (firebaseReady && db) await db.collection("posts").doc(pid).update({ [`reactions.${type}`]: arr });
-      else setPosts(prev => prev.map(p => p.id===pid ? {...p, reactions:{...p.reactions,[type]:arr}} : p));
-      showToast("Reaction updated");
-    };
-
-    const movePost = async (pid, dir) => {
-      const idx = posts.findIndex(p => p.id === pid);
-      if ((dir === -1 && idx === 0) || (dir === 1 && idx === posts.length-1)) return;
-      const newPosts = [...posts];
-      [newPosts[idx], newPosts[idx+dir]] = [newPosts[idx+dir], newPosts[idx]];
-      // Update order field
-      if (firebaseReady && db) {
-        const batch = db.batch();
-        newPosts.forEach((p, i) => batch.update(db.collection("posts").doc(p.id), { order: i }));
-        await batch.commit();
-      } else {
-        setPosts(newPosts);
-      }
-      showToast("Order updated");
-    };
-
-    const postAdminComment = async () => {
-      if (!adminComment.text.trim() || !adminComment.postId) return;
-      const data = {
-        name: ADMIN_DISPLAY_NAME, text: adminComment.text,
-        timestamp: firebaseReady && db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
-        isAdmin: true
-      };
-      if (firebaseReady && db) {
-        await db.collection("posts").doc(adminComment.postId).collection("comments").add(data);
-        await db.collection("posts").doc(adminComment.postId).update({ commentCount: firebase.firestore.FieldValue.increment(1) });
-      }
-      setAdminComment({ postId:"", text:"" });
-      showToast("Admin comment added ✓");
-    };
-
-    const postAdminPost = async () => {
-      if (!adminPost.content.trim()) return;
-      setAdminPostLoading(true);
-      const post = {
-        name: ADMIN_DISPLAY_NAME,
-        content: adminPost.content.trim(),
-        city: adminPost.city.trim() || "",
-        avatar: "✦",
-        isAdminPost: true,
-        authorUid: "admin",
-        timestamp: firebaseReady && db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
-        viewCount: 0, viewers: [],
-        reactions: { like: [], haha: [], heart: [] },
-        order: 0, pinned: false
-      };
-      if (firebaseReady && db) {
-        const docRef = await db.collection("posts").add(post);
-        try {
-          await db.collection("broadcasts").add({
-            type: "new_post",
-            postId: docRef.id,
-            authorUid: "admin",
-            postAuthorName: ADMIN_DISPLAY_NAME,
-            preview: adminPost.content.slice(0, 120),
-            ts: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        } catch(e) {}
-      } else {
-        setPosts(prev => [{ id:"adminpost_"+Date.now(), ...post, timestamp:{ toDate:()=>new Date() } }, ...prev]);
-      }
-      setAdminPost({ content:"", city:"" });
-      setAdminPostLoading(false);
-      showToast("✦ Admin post published!");
-    };
-
-    const togglePin = async (pid, current) => {
-      if (firebaseReady && db) await db.collection("posts").doc(pid).update({ pinned: !current });
-      else setPosts(prev => prev.map(p => p.id===pid ? {...p, pinned:!current} : p));
-      showToast(current ? "Post unpinned" : "Post pinned 📌");
-    };
-
-    if (!authed) {
-      return (
-        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-          <div className="glass" style={{ width:"100%", maxWidth:360, borderRadius:18, padding:28 }}>
-            <div style={{ fontSize:32, textAlign:"center", marginBottom:8 }}>🔐</div>
-            <h2 style={{ textAlign:"center", fontSize:22, fontWeight:800, marginBottom:6 }}>Admin Access</h2>
-            <p style={{ textAlign:"center", color:"var(--muted)", fontSize:13, marginBottom:28 }}>Enter your credentials to continue</p>
-            <input className="inp" type="email" placeholder="Email..." value={email} onChange={e => { setEmail(e.target.value); setErr(""); }}
-              onKeyDown={e => e.key === "Enter" && handleAuth()} style={{ marginBottom:10 }} />
-            <input className="inp" type="password" placeholder="Password..." value={pw} onChange={e => { setPw(e.target.value); setErr(""); }}
-              onKeyDown={e => e.key === "Enter" && handleAuth()} style={{ marginBottom:8 }} />
-            {err && <p style={{ color:"var(--coral)", fontSize:13, marginBottom:12 }}>{err}</p>}
-            <div style={{ display:"flex", gap:10, marginTop:16 }}>
-              <button onClick={onClose} style={{ flex:1, padding:12, border:"1px solid var(--border)", borderRadius:10, background:"transparent", color:"var(--muted)", cursor:"pointer", fontFamily:"DM Sans,sans-serif" }}>Cancel</button>
-              <button className="btn-primary" style={{ flex:1 }} onClick={handleAuth} disabled={loading}>{loading ? "..." : "Enter →"}</button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    const tabs = [
-      { id:"posts", label:"📝 Posts" },
-      { id:"newpost", label:"✦ New Post" },
-      { id:"comment", label:"💬 Comment" },
-      { id:"stats", label:"📊 Stats" }
-    ];
-
-    return (
-      <div className="modal-bg" style={{ alignItems:"flex-start", paddingTop:32 }} onClick={e => e.target === e.currentTarget && onClose()}>
-        <div className="glass" style={{ width:"100%", maxWidth:580, borderRadius:18, maxHeight:"82vh", overflow:"auto" }}>
-          {/* Admin header */}
-          <div style={{ padding:"20px 24px", borderBottom:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, background:"rgba(255,251,240,0.98)", backdropFilter:"blur(12px)", zIndex:10 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", padding:"6px 14px", borderRadius:10, fontFamily:"Syne,sans-serif", fontWeight:800, fontSize:14 }}>
-                ✦ ADMIN
-              </div>
-              <span style={{ color:"var(--muted)", fontSize:13 }}>{posts.length} posts total</span>
-            </div>
-            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.05)", border:"none", color:"var(--muted)", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:18 }}>×</button>
-          </div>
-
-          {/* Tabs */}
-          <div style={{ display:"flex", gap:4, padding:"12px 24px", borderBottom:"1px solid var(--border)" }}>
-            {tabs.map(t => (
-              <button key={t.id} onClick={() => setActiveTab(t.id)}
-                style={{ padding:"7px 16px", borderRadius:8, border:`1px solid ${activeTab===t.id?"var(--teal)":"var(--border)"}`, background: activeTab===t.id?"rgba(15,255,212,0.08)":"transparent", color: activeTab===t.id?"var(--teal)":"var(--muted)", cursor:"pointer", fontFamily:"DM Sans,sans-serif", fontSize:13, fontWeight:600, transition:"all 0.15s" }}>
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ padding:24 }}>
-
-            {/* POSTS TAB */}
-            {activeTab === "posts" && (
-              <div>
-                <p style={{ color:"var(--muted)", fontSize:13, marginBottom:16 }}>Manage, reorder, and edit posts. Posts are sorted by date (newest first).</p>
-                {posts.map((p, idx) => (
-                  <div key={p.id} className="admin-row">
-                    <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12 }}>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
-                          {p.pinned && <span style={{ fontSize:12, color:"var(--gold)" }}>📌</span>}
-                          <span style={{ fontWeight:700, fontSize:14, color:"var(--teal)" }}>{p.name}</span>
-                          <span className="city-badge" style={{ fontSize:11 }}>📍{p.city}</span>
-                          <span style={{ fontSize:11, color:"var(--muted)" }}>{timeAgo(p.timestamp)}</span>
-                        </div>
-                        <p style={{ fontSize:13, color:"var(--muted)", lineHeight:1.5, overflow:"hidden", display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical" }}>
-                          {p.content}
-                        </p>
-                        <div style={{ display:"flex", alignItems:"center", gap:14, marginTop:8 }}>
-                          <span style={{ fontSize:12, color:"var(--muted)" }}>👁️ {p.viewCount||0} views</span>
-                          <span style={{ fontSize:12, color:"var(--muted)" }}>👍 {p.reactions?.like?.length||0} · 😂 {p.reactions?.haha?.length||0} · ❤️ {p.reactions?.heart?.length||0}</span>
-                        </div>
-                      </div>
-
-                      <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
-                        {/* Order controls */}
-                        <div style={{ display:"flex", gap:4 }}>
-                          <button onClick={() => movePost(p.id, -1)} style={{ width:28, height:28, background:"rgba(255,255,255,0.05)", border:"1px solid var(--border)", borderRadius:6, cursor:"pointer", color:"var(--muted)", fontSize:12 }} disabled={idx===0}>↑</button>
-                          <button onClick={() => movePost(p.id, 1)} style={{ width:28, height:28, background:"rgba(255,255,255,0.05)", border:"1px solid var(--border)", borderRadius:6, cursor:"pointer", color:"var(--muted)", fontSize:12 }} disabled={idx===posts.length-1}>↓</button>
-                          <button onClick={() => togglePin(p.id, p.pinned)} style={{ width:28, height:28, background: p.pinned?"rgba(255,209,102,0.1)":"rgba(255,255,255,0.05)", border:`1px solid ${p.pinned?"var(--gold)":"var(--border)"}`, borderRadius:6, cursor:"pointer", color: p.pinned?"var(--gold)":"var(--muted)", fontSize:12 }}>📌</button>
-                          <button onClick={() => deletePost(p.id)} style={{ width:28, height:28, background:"rgba(255,107,107,0.1)", border:"1px solid rgba(255,107,107,0.3)", borderRadius:6, cursor:"pointer", color:"var(--coral)", fontSize:14 }}>×</button>
-                        </div>
-
-                        {/* Edit views */}
-                        {editingViews === p.id ? (
-                          <div style={{ display:"flex", gap:4 }}>
-                            <input type="number" value={newViewCount} onChange={e=>setNewViewCount(e.target.value)} style={{ width:70, background:"rgba(255,255,255,0.05)", border:"1px solid var(--teal)", borderRadius:6, padding:"3px 6px", color:"var(--text)", fontSize:12 }} />
-                            <button onClick={() => updateViewCount(p.id)} style={{ background:"rgba(15,255,212,0.1)", border:"1px solid var(--teal)", borderRadius:6, padding:"3px 8px", cursor:"pointer", color:"var(--teal)", fontSize:11, fontFamily:"DM Sans,sans-serif" }}>✓</button>
-                            <button onClick={() => setEditingViews(null)} style={{ background:"none", border:"1px solid var(--border)", borderRadius:6, padding:"3px 6px", cursor:"pointer", color:"var(--muted)", fontSize:12 }}>✕</button>
-                          </div>
-                        ) : (
-                          <button onClick={() => { setEditingViews(p.id); setNewViewCount(p.viewCount||0); }}
-                            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid var(--border)", borderRadius:6, padding:"3px 10px", cursor:"pointer", color:"var(--muted)", fontSize:11, fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>
-                            ✏️ Edit views
-                          </button>
-                        )}
-
-                        {/* Edit reactions */}
-                        <div style={{ display:"flex", gap:4 }}>
-                          {[["like","👍"],["haha","😂"],["heart","❤️"]].map(([type, emoji]) => (
-                            <button key={type}
-                              onClick={() => {
-                                const cnt = window.prompt(`Set ${emoji} count for this post:`, (p.reactions?.[type]?.length||0).toString());
-                                if (cnt !== null && !isNaN(cnt)) updateReactionCount(p.id, type, cnt);
-                              }}
-                              style={{ background:"rgba(255,255,255,0.04)", border:"1px solid var(--border)", borderRadius:6, padding:"3px 8px", cursor:"pointer", color:"var(--muted)", fontSize:11 }}>
-                              {emoji}{p.reactions?.[type]?.length||0}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* NEW POST AS ADMIN */}
-            {activeTab === "newpost" && (
-              <div>
-                <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20, padding:"14px 16px", background:"rgba(124,58,237,0.06)", border:"1px solid rgba(124,58,237,0.2)", borderRadius:12 }}>
-                  <div style={{ width:42, height:42, borderRadius:12, background:"linear-gradient(135deg,#7c3aed,#db2777)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:"white", fontWeight:900, flexShrink:0 }}>✦</div>
-                  <div>
-                    <div style={{ fontWeight:800, fontSize:14, color:"var(--text)" }}>{ADMIN_DISPLAY_NAME}</div>
-                    <div style={{ fontSize:12, color:"var(--muted)" }}>This post will appear with the admin badge</div>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom:14 }}>
-                  <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>📝 Post Content</label>
-                  <textarea className="inp" placeholder="Write the admin post content..." value={adminPost.content}
-                    onChange={e => setAdminPost(a=>({...a,content:e.target.value}))} style={{ minHeight:140 }} />
-                </div>
-
-                <div style={{ marginBottom:20 }}>
-                  <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>📍 City (optional)</label>
-                  <input className="inp" placeholder="e.g. Casablanca" value={adminPost.city}
-                    onChange={e => setAdminPost(a=>({...a,city:e.target.value}))} maxLength={40} />
-                </div>
-
-                <button className="btn-primary" style={{ background:"linear-gradient(135deg,#7c3aed,#db2777)", width:"100%" }}
-                  disabled={!adminPost.content.trim() || adminPostLoading} onClick={postAdminPost}>
-                  {adminPostLoading ? "Publishing..." : "✦ Publish as Admin"}
-                </button>
-              </div>
-            )}
-
-            {/* COMMENT AS ADMIN */}
-            {activeTab === "comment" && (
-              <AdminCommentTab
-                posts={posts}
-                adminComment={adminComment}
-                setAdminComment={setAdminComment}
-                postAdminComment={postAdminComment}
-                ADMIN_DISPLAY_NAME={ADMIN_DISPLAY_NAME}
-              />
-            )}
-
-            {/* STATS */}
-            {activeTab === "stats" && (
-              <div>
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:12, marginBottom:24 }}>
-                  {[
-                    { label:"Total Posts", val:posts.length, icon:"📝" },
-                    { label:"Total Views", val:posts.reduce((a,p)=>a+(p.viewCount||0),0), icon:"👁️" },
-                    { label:"Total Likes", val:posts.reduce((a,p)=>a+(p.reactions?.like?.length||0),0), icon:"👍" },
-                    { label:"Total Hearts", val:posts.reduce((a,p)=>a+(p.reactions?.heart?.length||0),0), icon:"❤️" },
-                    { label:"Total Hahas", val:posts.reduce((a,p)=>a+(p.reactions?.haha?.length||0),0), icon:"😂" },
-                    { label:"Pinned Posts", val:posts.filter(p=>p.pinned).length, icon:"📌" }
-                  ].map(s => (
-                    <div key={s.label} style={{ padding:20, background:"rgba(255,255,255,0.03)", borderRadius:12, border:"1px solid var(--border)" }}>
-                      <div style={{ fontSize:24, marginBottom:4 }}>{s.icon}</div>
-                      <div style={{ fontFamily:"Syne,sans-serif", fontSize:28, fontWeight:800, color:"var(--teal)" }}>{formatNum(s.val)}</div>
-                      <div style={{ fontSize:12, color:"var(--muted)", marginTop:2 }}>{s.label}</div>
-                    </div>
-                  ))}
-                </div>
-                <p style={{ fontSize:13, color:"var(--muted)" }}>Top 3 most viewed posts:</p>
-                {[...posts].sort((a,b)=>(b.viewCount||0)-(a.viewCount||0)).slice(0,3).map(p => (
-                  <div key={p.id} style={{ marginTop:8, padding:"10px 14px", background:"rgba(255,255,255,0.03)", borderRadius:10, border:"1px solid var(--border)", display:"flex", justifyContent:"space-between" }}>
-                    <span style={{ fontSize:13 }}><strong>{p.name}</strong>: {p.content?.slice(0,50)}...</span>
-                    <span style={{ color:"var(--teal)", fontSize:13, fontWeight:700, flexShrink:0 }}>👁️ {p.viewCount||0}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════════════════
-     🔔 NOTIFICATION PERMISSION BANNER
-     ═══════════════════════════════════════════════ */
-  function NotifPermBanner({ onAllow, onDismiss }) {
-    return (
-      <div className="perm-banner">
-        <div style={{ display:"flex", alignItems:"center", gap:12, flex:1, minWidth:220 }}>
-          <div style={{ width:40, height:40, borderRadius:12, background:"rgba(217,119,6,0.1)", border:"1px solid rgba(217,119,6,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>🔔</div>
-          <div>
-            <div style={{ fontWeight:700, fontSize:14, color:"var(--text)" }}>Enable notifications</div>
-            <div style={{ fontSize:12, color:"var(--muted)", marginTop:2 }}>Get notified for new posts, reactions & replies to your posts</div>
-          </div>
-        </div>
-        <div style={{ display:"flex", gap:8, flexShrink:0 }}>
-          <button onClick={onDismiss} style={{ padding:"8px 16px", border:"1px solid var(--border)", borderRadius:8, background:"transparent", color:"var(--muted)", cursor:"pointer", fontSize:13, fontFamily:"DM Sans,sans-serif" }}>
-            Later
-          </button>
-          <button className="btn-primary" style={{ padding:"8px 20px", fontSize:13 }} onClick={onAllow}>
-            Allow 🔔
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════════════════
-     🔔 NOTIFICATION PANEL DROPDOWN
-     ═══════════════════════════════════════════════ */
-  function NotifPanel({ broadcasts, items, onClose, onGoToPosts }) {
-    const emojiMap = { like: "👍", haha: "😂", heart: "❤️" };
-
-    const broadcastItems = broadcasts.map(b => ({
-      id: b.id, type: "new_post",
-      icon: "📢",
-      title: "New post",
-      body: `${b.postAuthorName || "Someone"}: ${b.preview || ""}`,
-      ts: b.ts,
-      read: false,
-      onClick: onGoToPosts
-    }));
-
-    const personalItems = items.map(n => {
-      const isReact = n.type === "new_react";
-      return {
-        id: n.id,
-        type: n.type || "new_comment",
-        icon: isReact ? (emojiMap[n.reactType] || "❤️") : "💬",
-        title: isReact ? "New reaction on your post" : n.type === "new_reply" ? "New reply" : "New comment",
-        body: isReact
-          ? `Someone reacted ${emojiMap[n.reactType] || ""} to your post`
-          : `${n.fromName || "Someone"}: ${n.preview || ""}`,
-        ts: n.ts,
-        read: n.read || false,
-        onClick: onGoToPosts
-      };
-    });
-
-    const allItems = [...broadcastItems, ...personalItems].sort((a, b) => {
-      const ta = a.ts?.toDate?.()?.getTime?.() || 0;
-      const tb = b.ts?.toDate?.()?.getTime?.() || 0;
-      return tb - ta;
-    });
-
-    return (
-      <div className="notif-panel" onClick={e => e.stopPropagation()}>
-        {/* Header */}
-        <div style={{ padding:"14px 16px 10px", borderBottom:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"space-between", position:"sticky", top:0, background:"white", zIndex:1 }}>
-          <span style={{ fontFamily:"Syne,sans-serif", fontWeight:800, fontSize:15, color:"var(--text)" }}>Notifications</span>
-          {allItems.some(i => !i.read) && (
-            <span style={{ fontSize:11, color:"var(--teal)", fontWeight:600, background:"rgba(217,119,6,0.08)", padding:"3px 8px", borderRadius:6 }}>
-              {allItems.filter(i => !i.read).length} new
-            </span>
-          )}
-        </div>
-
-        {/* Items */}
-        {allItems.length === 0 ? (
-          <div style={{ padding:"32px 16px", textAlign:"center" }}>
-            <div style={{ fontSize:32, marginBottom:8 }}>🔕</div>
-            <div style={{ fontSize:13, color:"var(--muted)" }}>No notifications yet</div>
-            <div style={{ fontSize:11, color:"var(--muted)", marginTop:4 }}>New posts, reactions & replies will appear here</div>
-          </div>
-        ) : (
-          allItems.map(item => (
-            <div key={item.id} className={`notif-row ${!item.read ? "unread" : ""}`} onClick={item.onClick}>
-              <div style={{ width:32, height:32, borderRadius:9, background:"rgba(217,119,6,0.09)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, flexShrink:0 }}>
-                {item.icon}
-              </div>
-              <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:12, fontWeight:700, color:"var(--teal)", marginBottom:2 }}>{item.title}</div>
-                <div style={{ fontSize:12, color:"var(--text)", lineHeight:1.45, overflow:"hidden", display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical" }}>
-                  {item.body}
-                </div>
-                <div style={{ fontSize:10, color:"var(--muted)", marginTop:3 }}>{timeAgo(item.ts)}</div>
-              </div>
-              {!item.read && (
-                <div style={{ width:7, height:7, borderRadius:"50%", background:"var(--teal)", flexShrink:0, marginTop:4 }} />
-              )}
-            </div>
-          ))
-        )}
-
-        {/* Footer — Safari iOS note */}
-        {isIOSDevice() && (
-          <div style={{ padding:"10px 14px", borderTop:"1px solid var(--border)", fontSize:11, color:"var(--muted)", textAlign:"center" }}>
-            📱 Add to Home Screen for push notifications on iOS
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  /* ═══════════════════════════════════
-     RENDER
-     ═══════════════════════════════════ */
-  const container = document.getElementById("root");
-  const root = ReactDOM.createRoot(container);
-  root.render(<App />);
-</script>
 </body>
 </html>
