@@ -1412,14 +1412,17 @@
     const myReact = uid ? (reactions.like?.includes(uid) ? "like" : reactions.haha?.includes(uid) ? "haha" : reactions.heart?.includes(uid) ? "heart" : null) : null;
     const lines = post.content?.split('\n') || [];
 
-    // All names available for mention (from comments, excluding admin)
+    // All names available for mention — BHT Team always at top, then post author, then commenters
     const mentionableNames = React.useMemo(() => {
       const seen = new Set();
-      return comments
-        .filter(c => !c.isAdmin && c.name)
-        .map(c => c.name)
-        .filter(n => { if (seen.has(n)) return false; seen.add(n); return true; });
-    }, [comments]);
+      const names = ["BHT Team"];
+      seen.add("BHT Team");
+      if (post.name && !seen.has(post.name)) { names.push(post.name); seen.add(post.name); }
+      comments.filter(c => c.name).forEach(c => {
+        if (!seen.has(c.name)) { names.push(c.name); seen.add(c.name); }
+      });
+      return names;
+    }, [comments, post.name]);
 
     // Filtered mention suggestions
     const mentionSuggestions = React.useMemo(() => {
@@ -1432,7 +1435,7 @@
       if (!firebaseReady || !db) {
         setComments([
           { id:"c1", name:"Luna", text:"This is so relatable 🌙", timestamp:{ toDate:()=>new Date(Date.now()-1800000) }, isAdmin:false },
-          { id:"c2", name:"✦ Aykono Team", text:"Thank you for sharing ✨", timestamp:{ toDate:()=>new Date(Date.now()-900000) }, isAdmin:true }
+          { id:"c2", name:"BHT Team", text:"Thank you for sharing ✨", timestamp:{ toDate:()=>new Date(Date.now()-900000) }, isAdmin:true }
         ]);
         setLoading(false);
         return;
@@ -1445,40 +1448,47 @@
       return () => unsub();
     }, [post.id]);
 
-    // Detect @ in textarea
+    // Detect @ — support multi-word names by matching everything after @ until cursor
     const handleCommentInput = (e) => {
       const val = e.target.value;
       const cursor = e.target.selectionStart;
       setCommentText(val);
-
-      // Find if cursor is right after an @ word
       const textBefore = val.slice(0, cursor);
-      const match = textBefore.match(/@(\w*)$/);
+      // Match @ and everything after it up to cursor (no other @ allowed)
+      const match = textBefore.match(/@([^@]*)$/);
       if (match) {
-        setMentionQuery(match[1]);
-        setMentionPos(cursor - match[0].length);
+        const query = match[1];
+        // If query exactly matches a name + space → already inserted, close dropdown
+        const done = mentionableNames.some(n => query === n + " ");
+        if (!done) {
+          setMentionQuery(query);
+          setMentionPos(cursor - match[0].length);
+        } else {
+          setMentionQuery(null);
+        }
       } else {
         setMentionQuery(null);
       }
     };
 
-    // Insert mention into text
+    // Insert full name (including spaces) replacing @query
     const insertMention = (name) => {
       const before = commentText.slice(0, mentionPos);
-      const after = commentText.slice(inputRef.current?.selectionStart || mentionPos + (mentionQuery?.length || 0) + 1);
+      const afterStart = mentionPos + 1 + (mentionQuery?.length || 0);
+      const after = commentText.slice(afterStart);
       const newText = before + "@" + name + " " + after;
       setCommentText(newText);
       setMentionQuery(null);
       setTimeout(() => {
         if (inputRef.current) {
-          const pos = before.length + name.length + 2;
+          const pos = before.length + 1 + name.length + 1;
           inputRef.current.focus();
           inputRef.current.setSelectionRange(pos, pos);
         }
       }, 0);
     };
 
-    // Handle reply click
+    // Handle reply — prefill @FullName
     const handleReply = (c) => {
       setReplyTo({ id: c.id, name: c.name });
       const prefix = "@" + c.name + " ";
@@ -1491,16 +1501,24 @@
       }, 50);
     };
 
-    // Render comment text with @mentions highlighted in blue
+    // Render comment text — highlight FULL name (incl. spaces) in blue/purple
     const renderCommentText = (text) => {
-      if (!text) return null;
-      const parts = text.split(/(@\w+)/g);
+      if (!text || mentionableNames.length === 0) return <span>{text}</span>;
+      // Sort names longest first to avoid partial matches
+      const sorted = [...mentionableNames].sort((a, b) => b.length - a.length);
+      const escaped = sorted.map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      const pattern = new RegExp(`(@(?:${escaped.join('|')}))`, 'g');
+      const parts = text.split(pattern);
       return parts.map((part, i) => {
-        if (part.startsWith("@")) {
-          const mentioned = part.slice(1);
-          const exists = mentionableNames.includes(mentioned) || part === "@" + (post.isAdminPost ? "BHT" : "");
+        if (part.startsWith("@") && mentionableNames.some(n => part === "@" + n)) {
+          const isBHT = part === "@BHT Team";
           return (
-            <span key={i} style={{ color: "#2563eb", fontWeight:700 }}>{part}</span>
+            <span key={i} style={{
+              color: isBHT ? "#7c3aed" : "#2563eb",
+              fontWeight: 800,
+              background: isBHT ? "rgba(124,58,237,0.09)" : "rgba(37,99,235,0.09)",
+              borderRadius: 4, padding: "0 3px"
+            }}>{part}</span>
           );
         }
         return <span key={i}>{part}</span>;
@@ -1744,6 +1762,163 @@
             </div>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  /* ═══════════════════════════════════
+     ADMIN COMMENT TAB — with @ mention
+     ═══════════════════════════════════ */
+  function AdminCommentTab({ posts, adminComment, setAdminComment, postAdminComment, ADMIN_DISPLAY_NAME }) {
+    const [mentionQuery, setMentionQuery] = useState(null);
+    const [mentionPos, setMentionPos] = useState(0);
+    const [postCommenters, setPostCommenters] = useState([]);
+    const textRef = React.useRef(null);
+
+    // Load commenters of selected post
+    useEffect(() => {
+      if (!adminComment.postId || !firebaseReady || !db) { setPostCommenters([]); return; }
+      db.collection("posts").doc(adminComment.postId).collection("comments")
+        .orderBy("timestamp","asc").get().then(snap => {
+          const seen = new Set();
+          const names = [];
+          snap.docs.forEach(d => {
+            const n = d.data().name;
+            if (n && !seen.has(n)) { seen.add(n); names.push(n); }
+          });
+          setPostCommenters(names);
+        }).catch(() => setPostCommenters([]));
+    }, [adminComment.postId]);
+
+    // All mentionable: post author + commenters
+    const selectedPost = posts.find(p => p.id === adminComment.postId);
+    const mentionableNames = React.useMemo(() => {
+      const seen = new Set();
+      const names = [];
+      if (selectedPost?.name) { names.push(selectedPost.name); seen.add(selectedPost.name); }
+      postCommenters.forEach(n => { if (!seen.has(n)) { names.push(n); seen.add(n); } });
+      return names;
+    }, [selectedPost, postCommenters]);
+
+    const mentionSuggestions = React.useMemo(() => {
+      if (mentionQuery === null) return [];
+      const q = mentionQuery.toLowerCase();
+      return mentionableNames.filter(n => n.toLowerCase().startsWith(q));
+    }, [mentionQuery, mentionableNames]);
+
+    const handleInput = (e) => {
+      const val = e.target.value;
+      const cursor = e.target.selectionStart;
+      setAdminComment(a => ({...a, text: val}));
+      const textBefore = val.slice(0, cursor);
+      const match = textBefore.match(/@([^@]*)$/);
+      if (match) {
+        const query = match[1];
+        const done = mentionableNames.some(n => query === n + " ");
+        if (!done) { setMentionQuery(query); setMentionPos(cursor - match[0].length); }
+        else setMentionQuery(null);
+      } else {
+        setMentionQuery(null);
+      }
+    };
+
+    const insertMention = (name) => {
+      const text = adminComment.text;
+      const before = text.slice(0, mentionPos);
+      const after = text.slice(mentionPos + 1 + (mentionQuery?.length || 0));
+      const newText = before + "@" + name + " " + after;
+      setAdminComment(a => ({...a, text: newText}));
+      setMentionQuery(null);
+      setTimeout(() => {
+        if (textRef.current) {
+          const pos = before.length + 1 + name.length + 1;
+          textRef.current.focus();
+          textRef.current.setSelectionRange(pos, pos);
+        }
+      }, 0);
+    };
+
+    return (
+      <div>
+        <p style={{ color:"var(--muted)", fontSize:13, marginBottom:20 }}>
+          Comment on a post as <strong style={{ color:"white" }}>{ADMIN_DISPLAY_NAME}</strong> — type <strong style={{ color:"#f59e0b" }}>@</strong> to mention users.
+        </p>
+
+        <div style={{ marginBottom:16 }}>
+          <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>Select Post</label>
+          <select className="inp" value={adminComment.postId} onChange={e => setAdminComment(a=>({...a,postId:e.target.value,text:""}))}>
+            <option value="">— Choose a post —</option>
+            {posts.map(p => <option key={p.id} value={p.id}>{p.name}: {p.content?.slice(0,60)}...</option>)}
+          </select>
+        </div>
+
+        {/* Show commenters as quick-tag chips */}
+        {mentionableNames.length > 0 && (
+          <div style={{ marginBottom:12 }}>
+            <div style={{ fontSize:11, color:"var(--muted)", fontWeight:600, marginBottom:6, textTransform:"uppercase", letterSpacing:"0.08em" }}>Tag someone:</div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+              {mentionableNames.map(name => (
+                <button key={name} onClick={() => {
+                  const cur = adminComment.text;
+                  const mention = "@" + name + " ";
+                  const newText = cur.endsWith(" ") || cur === "" ? cur + mention : cur + " " + mention;
+                  setAdminComment(a => ({...a, text: newText}));
+                  setTimeout(() => textRef.current?.focus(), 0);
+                }} style={{
+                  padding:"3px 10px", borderRadius:999,
+                  border:"1px solid rgba(245,158,11,0.35)",
+                  background:"rgba(245,158,11,0.08)",
+                  color:"#d97706", fontSize:12, fontWeight:700,
+                  cursor:"pointer", fontFamily:"DM Sans,sans-serif",
+                  transition:"all 0.15s"
+                }}
+                  onMouseEnter={e=>{e.currentTarget.style.background="rgba(245,158,11,0.18)"}}
+                  onMouseLeave={e=>{e.currentTarget.style.background="rgba(245,158,11,0.08)"}}
+                >@{name}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div style={{ marginBottom:16, position:"relative" }}>
+          <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>Comment</label>
+          <textarea
+            ref={textRef}
+            className="inp"
+            placeholder="Write your admin comment... (type @ to mention)"
+            value={adminComment.text}
+            onChange={handleInput}
+            style={{ minHeight:100 }}
+          />
+          {/* @ mention dropdown */}
+          {mentionQuery !== null && mentionSuggestions.length > 0 && (
+            <div style={{
+              position:"absolute", bottom:"calc(100% + 4px)", left:0, right:0,
+              background:"#1a1a2e", border:"1px solid rgba(245,158,11,0.25)",
+              borderRadius:10, overflow:"hidden",
+              boxShadow:"0 4px 20px rgba(0,0,0,0.3)", zIndex:50
+            }}>
+              <div style={{ padding:"5px 10px", fontSize:10, color:"var(--muted)", fontWeight:700, letterSpacing:"0.08em", borderBottom:"1px solid rgba(255,255,255,0.06)", textTransform:"uppercase" }}>
+                Mention
+              </div>
+              {mentionSuggestions.map(name => (
+                <div key={name} onClick={() => insertMention(name)}
+                  style={{ display:"flex", alignItems:"center", gap:10, padding:"9px 12px", cursor:"pointer", transition:"background 0.12s" }}
+                  onMouseEnter={e=>e.currentTarget.style.background="rgba(245,158,11,0.08)"}
+                  onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                  <div style={{ width:26, height:26, borderRadius:8, background:"linear-gradient(135deg,#d97706,#f59e0b)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, color:"white", fontWeight:800, flexShrink:0 }}>
+                    {name.charAt(0).toUpperCase()}
+                  </div>
+                  <span style={{ fontWeight:700, fontSize:13, color:"white" }}>@{name}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <button className="btn-primary" disabled={!adminComment.postId||!adminComment.text.trim()} onClick={postAdminComment}>
+          ✦ Post as Admin
+        </button>
       </div>
     );
   }
@@ -2028,23 +2203,13 @@
 
             {/* COMMENT AS ADMIN */}
             {activeTab === "comment" && (
-              <div>
-                <p style={{ color:"var(--muted)", fontSize:13, marginBottom:20 }}>Comment on a post as <strong style={{ color:"white" }}>{ADMIN_DISPLAY_NAME}</strong> — your comment will have the admin badge.</p>
-                <div style={{ marginBottom:16 }}>
-                  <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>Select Post</label>
-                  <select className="inp" value={adminComment.postId} onChange={e => setAdminComment(a=>({...a,postId:e.target.value}))}>
-                    <option value="">— Choose a post —</option>
-                    {posts.map(p => <option key={p.id} value={p.id}>{p.name}: {p.content?.slice(0,60)}...</option>)}
-                  </select>
-                </div>
-                <div style={{ marginBottom:16 }}>
-                  <label style={{ display:"block", fontSize:13, color:"var(--muted)", fontWeight:600, marginBottom:6 }}>Comment</label>
-                  <textarea className="inp" placeholder="Write your admin comment..." value={adminComment.text} onChange={e => setAdminComment(a=>({...a,text:e.target.value}))} style={{ minHeight:100 }} />
-                </div>
-                <button className="btn-primary" disabled={!adminComment.postId||!adminComment.text.trim()} onClick={postAdminComment}>
-                  ✦ Post as Admin
-                </button>
-              </div>
+              <AdminCommentTab
+                posts={posts}
+                adminComment={adminComment}
+                setAdminComment={setAdminComment}
+                postAdminComment={postAdminComment}
+                ADMIN_DISPLAY_NAME={ADMIN_DISPLAY_NAME}
+              />
             )}
 
             {/* STATS */}
