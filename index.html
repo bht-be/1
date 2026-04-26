@@ -786,6 +786,7 @@
     const [toast, setToast] = useState(null);
     const uid = useUserId();
     const viewedThisSession = useRef(new Set());
+    const manualOrderRef = useRef({});
     const secretClicks = useRef(0);
     const secretTimer = useRef(null);
 
@@ -966,16 +967,29 @@
         .orderBy("timestamp", "desc")
         .onSnapshot(snap => {
           const ps = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          ps.sort((a,b) => {
+
+          // Update the persistent order map from Firestore data
+          ps.forEach(p => {
+            if (typeof p.order === "number") {
+              manualOrderRef.current[p.id] = p.order;
+            }
+          });
+
+          const mo = manualOrderRef.current;
+
+          ps.sort((a, b) => {
+            // Pinned always first
             if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-            // Respect manual order if both have it
-            const aHasOrder = typeof a.order === "number";
-            const bHasOrder = typeof b.order === "number";
-            if (aHasOrder && bHasOrder) return a.order - b.order;
+            const aO = mo[a.id];
+            const bO = mo[b.id];
+            // Both have manual order → respect it
+            if (aO !== undefined && bO !== undefined) return aO - bO;
+            // Fall back to timestamp (newest first)
             const ta = a.timestamp?.toDate?.() || new Date(0);
             const tb = b.timestamp?.toDate?.() || new Date(0);
             return tb - ta;
           });
+
           setPosts(ps);
           setLoading(false);
         }, () => setLoading(false));
@@ -1014,7 +1028,7 @@
         timestamp: firebaseReady && db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString(),
         viewCount: 0, viewers: [],
         reactions: { like: [], haha: [], heart: [] },
-        order: posts.length, pinned: false
+        pinned: false
       };
       if (firebaseReady && db) {
         const docRef = await db.collection("posts").add(post);
@@ -2163,8 +2177,11 @@
       if ((dir === -1 && idx === 0) || (dir === 1 && idx === posts.length-1)) return;
       const newPosts = [...posts];
       [newPosts[idx], newPosts[idx+dir]] = [newPosts[idx+dir], newPosts[idx]];
-      // Assign order values based on new positions
-      newPosts.forEach((p, i) => { p.order = i; });
+      // Assign order values to ALL posts based on new positions
+      newPosts.forEach((p, i) => {
+        p.order = i;
+        manualOrderRef.current[p.id] = i;
+      });
       // Update local state immediately for instant feedback
       setPosts([...newPosts]);
       // Sync to Firebase
