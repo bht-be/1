@@ -786,7 +786,6 @@
     const [toast, setToast] = useState(null);
     const uid = useUserId();
     const viewedThisSession = useRef(new Set());
-    const manualOrderRef = useRef({});
     const secretClicks = useRef(0);
     const secretTimer = useRef(null);
 
@@ -967,29 +966,13 @@
         .orderBy("timestamp", "desc")
         .onSnapshot(snap => {
           const ps = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-          // Update the persistent order map from Firestore data
-          ps.forEach(p => {
-            if (typeof p.order === "number") {
-              manualOrderRef.current[p.id] = p.order;
-            }
-          });
-
-          const mo = manualOrderRef.current;
-
+          // Simple sort: pinned first, then newest first by date
           ps.sort((a, b) => {
-            // Pinned always first
             if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-            const aO = mo[a.id];
-            const bO = mo[b.id];
-            // Both have manual order → respect it
-            if (aO !== undefined && bO !== undefined) return aO - bO;
-            // Fall back to timestamp (newest first)
             const ta = a.timestamp?.toDate?.() || new Date(0);
             const tb = b.timestamp?.toDate?.() || new Date(0);
             return tb - ta;
           });
-
           setPosts(ps);
           setLoading(false);
         }, () => setLoading(false));
@@ -2172,25 +2155,13 @@
       showToast("Reaction updated");
     };
 
-    const movePost = async (pid, dir) => {
-      const idx = posts.findIndex(p => p.id === pid);
-      if ((dir === -1 && idx === 0) || (dir === 1 && idx === posts.length-1)) return;
-      const newPosts = [...posts];
-      [newPosts[idx], newPosts[idx+dir]] = [newPosts[idx+dir], newPosts[idx]];
-      // Assign order values to ALL posts based on new positions
-      newPosts.forEach((p, i) => {
-        p.order = i;
-        manualOrderRef.current[p.id] = i;
-      });
-      // Update local state immediately for instant feedback
-      setPosts([...newPosts]);
-      // Sync to Firebase
+    const resetOrderByDate = async () => {
+      if (!window.confirm("Reset all post ordering to newest-first by date?")) return;
       if (firebaseReady && db) {
         const batch = db.batch();
-        newPosts.forEach((p, i) => batch.update(db.collection("posts").doc(p.id), { order: i }));
-        try { await batch.commit(); } catch(e) {}
+        posts.forEach(p => batch.update(db.collection("posts").doc(p.id), { order: firebase.firestore.FieldValue.delete() }));
+        try { await batch.commit(); showToast("Order reset to date ✓"); } catch(e) { showToast("Error resetting order"); }
       }
-      showToast("Order updated ✓");
     };
 
     const postAdminComment = async () => {
@@ -2312,7 +2283,10 @@
             {/* POSTS TAB */}
             {activeTab === "posts" && (
               <div>
-                <p style={{ color:"var(--muted)", fontSize:13, marginBottom:16 }}>Manage, reorder, and edit posts. Use 🙈 to hide a post from the public (it stays in Firestore). Posts are sorted by manual order, then by date.</p>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
+                  <p style={{ color:"var(--muted)", fontSize:13 }}>Posts sorted by date (newest first). Use 📌 to pin, 🙈 to hide.</p>
+                  <button onClick={resetOrderByDate} style={{ flexShrink:0, padding:"5px 12px", borderRadius:8, border:"1px solid rgba(217,119,6,0.3)", background:"rgba(217,119,6,0.06)", color:"var(--teal)", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"DM Sans,sans-serif", whiteSpace:"nowrap" }}>🔄 Reset order by date</button>
+                </div>
                 {posts.map((p, idx) => (
                   <div key={p.id} className="admin-row">
                     <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12 }}>
@@ -2334,10 +2308,8 @@
                       </div>
 
                       <div style={{ display:"flex", flexDirection:"column", gap:6, flexShrink:0 }}>
-                        {/* Order controls */}
+                        {/* Controls */}
                         <div style={{ display:"flex", gap:4 }}>
-                          <button onClick={() => movePost(p.id, -1)} style={{ width:28, height:28, background:"rgba(255,255,255,0.05)", border:"1px solid var(--border)", borderRadius:6, cursor:"pointer", color:"var(--muted)", fontSize:12 }} disabled={idx===0}>↑</button>
-                          <button onClick={() => movePost(p.id, 1)} style={{ width:28, height:28, background:"rgba(255,255,255,0.05)", border:"1px solid var(--border)", borderRadius:6, cursor:"pointer", color:"var(--muted)", fontSize:12 }} disabled={idx===posts.length-1}>↓</button>
                           <button onClick={() => togglePin(p.id, p.pinned)} style={{ width:28, height:28, background: p.pinned?"rgba(255,209,102,0.1)":"rgba(255,255,255,0.05)", border:`1px solid ${p.pinned?"var(--gold)":"var(--border)"}`, borderRadius:6, cursor:"pointer", color: p.pinned?"var(--gold)":"var(--muted)", fontSize:12 }}>📌</button>
                           <button onClick={() => toggleHide(p.id, p.hidden)} title={p.hidden ? "Show post" : "Hide post"} style={{ width:28, height:28, background: p.hidden?"rgba(239,68,68,0.1)":"rgba(255,255,255,0.05)", border:`1px solid ${p.hidden?"rgba(239,68,68,0.4)":"var(--border)"}`, borderRadius:6, cursor:"pointer", color: p.hidden?"#ef4444":"var(--muted)", fontSize:14 }}>{p.hidden?"👁️":"🙈"}</button>
                           <button onClick={() => deletePost(p.id)} style={{ width:28, height:28, background:"rgba(255,107,107,0.1)", border:"1px solid rgba(255,107,107,0.3)", borderRadius:6, cursor:"pointer", color:"var(--coral)", fontSize:14 }}>×</button>
