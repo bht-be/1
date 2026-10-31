@@ -48,7 +48,7 @@
 <h2>Your Unfiltered inbox</h2><p class="small muted">Answers sent to your personal BHT link appear here.</p>
 <div id="inboxState" class="loading">Connecting to BHT…</div>
 <div id="inboxList"></div>
-<div class="notice">Anonymous doesn't mean consequence-free. Don't use this space to bully, threaten, expose private information or pressure anyone. You can report harmful content.</div>
+<div class="notice">Anonymous doesn't mean consequence-free. Don't use this space to bully, threaten, expose private information or pressure anyone. You can report harmful content. Messages may be reviewed by moderators to keep BHT safe.</div>
 <div style="margin-top:18px"><button class="btn secondary" id="copyLink">Copy my invite link ↗</button></div>
 </aside>
 </div>
@@ -127,8 +127,21 @@
   async function ensureAuth(){
     if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
     auth=firebase.auth();db=firebase.firestore();
-    const result=auth.currentUser?{user:auth.currentUser}:await auth.signInAnonymously();
-    uid=result.user.uid;localStorage.setItem("bht_unfiltered_uid",uid);
+    try{db.settings({experimentalAutoDetectLongPolling:true,merge:true});}catch(e){}
+    const wait=ms=>new Promise(r=>setTimeout(r,ms));
+    // wait for the saved session first, so the same visitor keeps the same ID
+    let user=await new Promise(res=>{const un=auth.onAuthStateChanged(u=>{un();res(u);},()=>res(null));});
+    let lastErr=null;
+    for(let i=0;i<3&&!user;i++){
+      try{user=(await auth.signInAnonymously()).user;}
+      catch(e){lastErr=e;if(!(e&&e.code==="auth/network-request-failed"))throw e;await wait(1200*(i+1));}
+    }
+    if(!user){
+      // last resort: keep the session in memory only (works in restricted/sandboxed browsers)
+      try{await auth.setPersistence(firebase.auth.Auth.Persistence.NONE);user=(await auth.signInAnonymously()).user;}
+      catch(e){throw lastErr||e;}
+    }
+    uid=user.uid;try{localStorage.setItem("bht_unfiltered_uid",uid);}catch(e){}
     return uid;
   }
   async function sendAnswer({prompt,answer,recipient,anonymous=true}){
