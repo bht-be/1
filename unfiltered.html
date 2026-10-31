@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>BHT Unfiltered — Real talk only</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>(function(){var a=!window.firebase,f=a||!firebase.firestore,u=a||!firebase.auth,b="https://cdn.jsdelivr.net/npm/firebase@10.7.0/firebase-";function w(n){document.write('<script src="'+b+n+'-compat.js"><\/script>');}if(a)w("app");if(f)w("firestore");if(u)w("auth");})();</script>
+<style>
+:root{--bg:#fff;--bg2:#f5f5f7;--surface:#fff;--text:#1d1d1f;--muted:#6e6e73;--border:rgba(0,0,0,.08);--flame:#ff4458;--grad:linear-gradient(135deg,#fd267a,#ff6036);--f:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,"Segoe UI",sans-serif;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{background:var(--bg);color-scheme:light}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--f);min-height:100dvh;-webkit-font-smoothing:antialiased}button,input,textarea,select{font:inherit}button{cursor:pointer}.topnav{position:sticky;top:0;z-index:20;padding:var(--sat) max(20px,env(safe-area-inset-right)) 0 max(20px,env(safe-area-inset-left));background:rgba(255,255,255,.78);backdrop-filter:saturate(180%) blur(22px);border-bottom:1px solid var(--border)}.navinner{max-width:1120px;height:64px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:18px}.wm{font-weight:900;font-size:23px;letter-spacing:-.06em;text-decoration:none;background:var(--grad);background-clip:text;-webkit-background-clip:text;color:transparent}.navlinks{display:flex;align-items:center;gap:4px;background:rgba(120,120,128,.12);padding:4px;border-radius:999px}.navlinks a{padding:8px 16px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:13px;font-weight:650}.navlinks a.active{background:#fff;color:var(--text);box-shadow:0 1px 4px #00000018}.navright{font-size:12px;font-weight:650;color:var(--muted)}.page{max-width:1000px;margin:0 auto;padding:44px 22px calc(50px + var(--sab))}.hero{padding:18px 0 28px}.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--bg2);padding:8px 13px;border-radius:99px;font-size:12px;font-weight:750}.dot{width:8px;height:8px;background:#34c759;border-radius:50%;box-shadow:0 0 0 4px #34c75920}.hero h1{font-size:clamp(42px,7vw,70px);line-height:.98;letter-spacing:-.065em;margin:20px 0 14px;font-weight:900}.grad{background:var(--grad);background-clip:text;-webkit-background-clip:text;color:transparent}.hero p{color:var(--muted);font-size:17px;line-height:1.6;max-width:610px;margin:0}.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:20px;align-items:start}.panel{background:var(--surface);border-radius:26px;box-shadow:0 2px 24px #0000000d;padding:24px}.panel h2{font-size:20px;letter-spacing:-.04em;margin:0 0 7px}.muted{color:var(--muted)}.small{font-size:13px;line-height:1.5}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0}.tab{border:0;border-radius:999px;background:var(--bg2);padding:10px 14px;color:var(--muted);font-size:13px;font-weight:700}.tab.active{background:#1d1d1f;color:white}.prompt-card{border:1px solid var(--border);border-radius:20px;padding:17px;margin:12px 0;transition:.2s}.prompt-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px #0000000b}.prompt-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}.prompt-icon{width:38px;height:38px;display:grid;place-items:center;background:#fff0f1;border-radius:13px;font-size:19px}.prompt-title{font-weight:800;font-size:14px}.prompt-desc{font-size:12px;color:var(--muted);margin-top:2px}.prompt-question{font-size:18px;line-height:1.45;font-weight:750;letter-spacing:-.025em;margin:10px 0 16px}.btn{border:0;border-radius:999px;padding:12px 18px;background:var(--grad);color:#fff;font-weight:750;font-size:13px;box-shadow:0 8px 20px -9px #fd267a99}.btn:disabled{opacity:.5;cursor:not-allowed}.btn.secondary{background:var(--bg2);color:var(--text);box-shadow:none}.btn.ghost{background:transparent;color:var(--muted);box-shadow:none}.btnrow{display:flex;gap:8px;flex-wrap:wrap}.field{width:100%;border:1px solid var(--border);background:var(--bg2);border-radius:14px;padding:13px 14px;outline:none;color:var(--text);margin:8px 0 14px}.field:focus{border-color:var(--flame);background:#fff;box-shadow:0 0 0 4px #ff44581a}textarea.field{min-height:116px;resize:vertical;line-height:1.5}.response-card{background:var(--bg2);border-radius:17px;padding:15px;margin:10px 0}.response-card p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;margin:8px 0}.badge{display:inline-flex;border-radius:99px;background:#ff445814;color:var(--flame);font-size:11px;font-weight:800;padding:5px 9px}.side-list{display:grid;gap:10px;margin-top:16px}.side-item{display:flex;gap:12px;align-items:flex-start;background:var(--bg2);padding:13px;border-radius:16px}.side-item b{display:block;font-size:13px;margin-bottom:3px}.side-item span{font-size:12px;color:var(--muted);line-height:1.45}.notice{border-radius:16px;background:#fff8e8;color:#765300;padding:13px 15px;font-size:12px;line-height:1.55;margin-top:15px}.empty{text-align:center;padding:28px 12px;color:var(--muted);font-size:14px}.hidden{display:none!important}.toast{position:fixed;z-index:50;bottom:24px;left:50%;transform:translateX(-50%);background:#1d1d1f;color:#fff;border-radius:99px;padding:12px 18px;font-size:13px;font-weight:650;box-shadow:0 8px 30px #0003}.modal{position:fixed;inset:0;z-index:40;background:#0006;backdrop-filter:blur(7px);display:grid;place-items:center;padding:18px}.modalbox{background:#fff;border-radius:25px;padding:24px;width:min(100%,520px);max-height:90dvh;overflow:auto;box-shadow:0 25px 80px #0003}.modalhead{display:flex;justify-content:space-between;align-items:center;gap:12px}.close{border:0;background:var(--bg2);border-radius:50%;width:38px;height:38px;font-size:20px}.footer{padding:25px 0;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.loading{padding:30px;text-align:center;color:var(--muted)}
+@media(max-width:760px){.navinner{height:58px}.navlinks a{padding:8px 11px;font-size:12px}.navright{display:none}.page{padding:25px 16px calc(35px + var(--sab))}.layout{grid-template-columns:1fr}.hero{padding-top:10px}.hero h1{font-size:clamp(42px,13vw,62px)}.panel{padding:19px;border-radius:22px}.sidepanel{order:2}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.closed{max-width:520px;margin:18vh auto 0;text-align:center;padding:0 22px}.closed .big{font-size:54px}.closed h1{font-size:30px;letter-spacing:-.04em;margin:14px 0 8px}.closed p{color:var(--muted);line-height:1.6}.closed a{display:inline-block;margin-top:18px;padding:12px 24px;border-radius:999px;background:var(--grad);color:#fff;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<header class="topnav"><div class="navinner">
+<a class="wm" href="./index.html" aria-label="BHT home">BHT</a>
+<nav class="navlinks" aria-label="Main navigation">
+<a href="./index.html">Home</a><a href="./index.html#posts">Feed</a><a href="./index.html#chat">Chat</a><a class="active" href="./unfiltered.html">Unfiltered</a>
+</nav><div class="navright">real talk only ✦</div>
+</div></header>
+
+<main class="page">
+<section class="hero">
+<div class="eyebrow"><i class="dot"></i> A little honesty goes a long way</div>
+<h1>Say the things<br><span class="grad">you never said.</span></h1>
+<p>Honest questions, little challenges and the things you've noticed about someone but never actually told them. Keep it kind. Keep it real.</p>
+</section>
+
+<div class="layout">
+<section class="panel">
+<h2>Pick a prompt</h2><p class="small muted">Choose a card, write your answer and send it to someone using their BHT invite link.</p>
+<div class="tabs" id="categoryTabs">
+<button class="tab active" data-cat="all">For you</button><button class="tab" data-cat="honest">Honest questions</button><button class="tab" data-cat="notice">Things noticed</button><button class="tab" data-cat="first">First impressions</button><button class="tab" data-cat="challenge">Challenges</button>
+</div>
+<div id="promptList"></div>
+</section>
+
+<aside class="panel sidepanel">
+<h2>Your Unfiltered inbox</h2><p class="small muted">Answers sent to your personal BHT link appear here.</p>
+<div id="inboxState" class="loading">Connecting to BHT…</div>
+<div id="inboxList"></div>
+<div class="notice">Anonymous doesn't mean consequence-free. Don't use this space to bully, threaten, expose private information or pressure anyone. You can report harmful content.</div>
+<div style="margin-top:18px"><button class="btn secondary" id="copyLink">Copy my invite link ↗</button></div>
+</aside>
+</div>
+
+<section class="panel" style="margin-top:20px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2>Send a real question</h2><p class="small muted">You can send a prompt to a friend if you have their BHT Unfiltered link.</p></div><span class="badge">NO REAL NAMES NEEDED</span></div>
+<label class="small" for="targetLink"><b>Friend's invite link or ID</b></label>
+<input class="field" id="targetLink" placeholder="Paste their BHT Unfiltered link or invite ID">
+<label class="small" for="customPrompt"><b>Your question / challenge</b></label>
+<textarea class="field" id="customPrompt" maxlength="500" placeholder="something i've always wanted to ask u..."></textarea>
+<label style="display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--muted);line-height:1.45;margin:2px 0 16px"><input type="checkbox" id="anonymousSend" checked style="accent-color:#ff4458;margin-top:2px"> Send anonymously. Your public nickname won't be shown to the recipient.</label>
+<button class="btn" id="sendCustom">Send it →</button>
+</section>
+<div class="footer"><span>BHT — Be Honest &amp; True</span><span>no fake, just good vibes.</span></div>
+</main>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modalbox">
+<div class="modalhead"><div><span class="badge" id="modalCategory">HONEST QUESTION</span><h2 id="modalTitle" style="margin:10px 0 0;font-size:23px;letter-spacing:-.04em">Answer honestly</h2></div><button class="close" id="closeModal" aria-label="Close">×</button></div>
+<p id="modalPrompt" style="font-size:17px;font-weight:750;line-height:1.5;margin:20px 0 8px"></p>
+<label class="small" for="answerText"><b>Your answer</b></label><textarea class="field" id="answerText" maxlength="1000" placeholder="say it in your own words..."></textarea>
+<label class="small" for="recipientId"><b>Recipient's BHT invite ID (optional for your own draft)</b></label><input class="field" id="recipientId" placeholder="paste invite ID">
+<label style="display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--muted);line-height:1.45;margin:2px 0 16px"><input type="checkbox" id="sendAnon" checked style="accent-color:#ff4458;margin-top:2px"> Keep me anonymous</label>
+<div class="btnrow"><button class="btn" id="submitAnswer">Send answer →</button><button class="btn secondary" id="saveDraft">Save draft</button></div>
+<p class="small muted" style="margin-top:12px">You can skip any prompt. Be respectful and don't share anyone's private information.</p>
+</div></div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+(() => {
+  // Same public Firebase project used by the BHT site. Firebase API keys identify a project;
+  // Firestore Security Rules must still enforce access control.
+  const firebaseConfig = {
+    apiKey: "AIzaSyBkDqsxLQzXHCh7yRq-rN4xXn5Le2dRBas",
+    authDomain: "be-honst.firebaseapp.com",
+    projectId: "be-honst",
+    storageBucket: "be-honst.firebasestorage.app",
+    messagingSenderId: "975779048741",
+    appId: "1:975779048741:web:7306eada473adf9c66becc"
+  };
+
+  const prompts = [
+    {id:"h1",cat:"honest",icon:"💬",title:"Honest question",desc:"A question worth asking",q:"what's something u wish people understood about u?"},
+    {id:"h2",cat:"honest",icon:"🫶",title:"Say it out loud",desc:"A little truth",q:"what's something u wanted to tell me but never found the right moment?"},
+    {id:"h3",cat:"honest",icon:"🌱",title:"Real talk",desc:"No pressure, just honesty",q:"what's one thing u're currently trying to improve about urself?"},
+    {id:"n1",cat:"notice",icon:"👀",title:"Something I noticed",desc:"A detail that stayed with u",q:"what's something you've noticed about me but never actually said?"},
+    {id:"n2",cat:"notice",icon:"✨",title:"Quiet appreciation",desc:"Tell someone what u value",q:"what's one little thing i do that u genuinely appreciate?"},
+    {id:"n3",cat:"notice",icon:"🪞",title:"A gentle observation",desc:"Honest, never hurtful",q:"what's a strength u think i don't see in myself?"},
+    {id:"f1",cat:"first",icon:"🧠",title:"First impression",desc:"Then vs now",q:"what was ur first impression of me, and has it changed?"},
+    {id:"f2",cat:"first",icon:"🔄",title:"Plot twist",desc:"What surprised u?",q:"what surprised u most after getting to know me?"},
+    {id:"c1",cat:"challenge",icon:"🎯",title:"One-word challenge",desc:"Keep it simple",q:"describe me in one word and tell me why."},
+    {id:"c2",cat:"challenge",icon:"💌",title:"Appreciation challenge",desc:"Make someone's day",q:"tell someone one thing they deserve to hear more often."},
+    {id:"c3",cat:"challenge",icon:"🤝",title:"Honesty challenge",desc:"Only if you're comfortable",q:"share one kind truth you've been meaning to say to someone."}
+  ];
+  let db=null, auth=null, uid=null, activePrompt=null, inboxUnsub=null;
+  const $=id=>document.getElementById(id);
+  const escapeHTML=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),2800);}
+  function inviteId(){return uid||localStorage.getItem("bht_unfiltered_uid")||"";}
+  function renderPrompts(cat="all"){
+    const list=cat==="all"?prompts:prompts.filter(p=>p.cat===cat);
+    $("promptList").innerHTML=list.map(p=>`<article class="prompt-card">
+      <div class="prompt-top"><div class="prompt-icon">${p.icon}</div><div><div class="prompt-title">${escapeHTML(p.title)}</div><div class="prompt-desc">${escapeHTML(p.desc)}</div></div></div>
+      <div class="prompt-question">${escapeHTML(p.q)}</div><button class="btn secondary" data-prompt="${p.id}">Use this prompt ↗</button>
+    </article>`).join("");
+    $("promptList").querySelectorAll("[data-prompt]").forEach(b=>b.addEventListener("click",()=>openPrompt(prompts.find(p=>p.id===b.dataset.prompt))));
+  }
+  function openPrompt(p){
+    activePrompt=p;$("modalCategory").textContent=p.cat.toUpperCase();$("modalTitle").textContent=p.title;$("modalPrompt").textContent=p.q;
+    $("answerText").value="";$("recipientId").value="";$("modal").classList.remove("hidden");$("answerText").focus();
+  }
+  function closeModal(){$("modal").classList.add("hidden");activePrompt=null;}
+  function normalizeRecipient(raw){
+    const v=(raw||"").trim();if(!v)return "";
+    try{const u=new URL(v);const id=u.searchParams.get("bht_unfiltered")||u.searchParams.get("invite");if(id)return id;const last=u.pathname.split("/").filter(Boolean).pop();return last||v;}catch{return v.replace(/^@/,"");}
+  }
+  async function ensureAuth(){
+    if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+    auth=firebase.auth();db=firebase.firestore();
+    const result=auth.currentUser?{user:auth.currentUser}:await auth.signInAnonymously();
+    uid=result.user.uid;localStorage.setItem("bht_unfiltered_uid",uid);
+    return uid;
+  }
+  async function sendAnswer({prompt,answer,recipient,anonymous=true}){
+    if(!db||!uid)throw new Error("Not connected yet. Try again in a moment.");
+    if(!answer.trim())throw new Error("Write an answer first");
+    if(answer.trim().length>1000)throw new Error("Your answer is too long");
+    if(!recipient)throw new Error("Add the recipient's invite ID");
+    await db.collection("unfiltered_responses").add({
+      recipientId:recipient, senderUid:uid, senderLabel:anonymous?"Anonymous":"BHT member",
+      promptId:prompt.id||"custom", promptCategory:prompt.cat||"custom",
+      promptText:prompt.q||prompt, answer:answer.trim(), anonymous:!!anonymous,
+      status:"new", createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+  async function loadInbox(){
+    if(!db||!uid){$("inboxState").textContent="Sign in to load your inbox.";return;}
+    $("inboxState").textContent="Loading your answers…";
+    // Query only the signed-in user's inbox. Firestore rules should restrict this collection
+    // so a user can read only documents whose recipientId equals their auth UID.
+    inboxUnsub=db.collection("unfiltered_responses").where("recipientId","==",uid).limit(50)
+      .onSnapshot(snap=>{
+        $("inboxState").classList.add("hidden");
+        const items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+          const ta=a.createdAt?.toMillis?.()||0,tb=b.createdAt?.toMillis?.()||0;return tb-ta;
+        });
+        if(!items.length){$("inboxList").innerHTML='<div class="empty">Your inbox is quiet for now ✨<br><span class="small">Share your invite link so people can send you something real.</span></div>';return;}
+        $("inboxList").innerHTML=items.map(x=>`<article class="response-card" data-id="${escapeHTML(x.id)}">
+          <span class="badge">${escapeHTML((x.promptCategory||"message").replace(/^\w/,c=>c.toUpperCase()))}</span>
+          <div class="small muted" style="margin-top:8px">${escapeHTML(x.senderLabel||"Anonymous")} · ${x.status==="reported"?"under review":"new message"}</div>
+          <div style="font-size:12px;font-weight:750;margin-top:10px">${escapeHTML(x.promptId==="custom"?"A question for you":(x.promptText||"A message for you"))}</div>
+          <p>${escapeHTML(x.answer||"")}</p>
+          <div class="btnrow"><button class="btn ghost" data-report="${escapeHTML(x.id)}">Report</button><button class="btn ghost" data-delete="${escapeHTML(x.id)}">Delete</button></div>
+        </article>`).join("");
+        $("inboxList").querySelectorAll("[data-report]").forEach(b=>b.onclick=()=>reportResponse(b.dataset.report));
+        $("inboxList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteResponse(b.dataset.delete));
+      },err=>{$("inboxState").classList.remove("hidden");$("inboxState").textContent="Couldn't load your inbox. Check your connection and try again.";console.error(err);});
+  }
+  async function reportResponse(id){
+    try{await db.collection("unfiltered_reports").add({responseId:id,reporterUid:uid,reason:"User reported",createdAt:firebase.firestore.FieldValue.serverTimestamp()});toast("Report sent. Thanks for looking out.");}
+    catch(e){console.error(e);toast("Couldn't send the report. Try again.");}
+  }
+  async function deleteResponse(id){
+    if(!confirm("Delete this response from your inbox?"))return;
+    try{await db.collection("unfiltered_responses").doc(id).delete();toast("Deleted from your inbox.");}
+    catch(e){console.error(e);toast("Couldn't delete this response. Try again.");}
+  }
+  $("categoryTabs").addEventListener("click",e=>{
+    const b=e.target.closest("[data-cat]");if(!b)return;
+    document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t===b));renderPrompts(b.dataset.cat);
+  });
+  $("closeModal").onclick=closeModal;$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal();});
+  $("submitAnswer").onclick=async()=>{
+    const btn=$("submitAnswer");btn.disabled=true;
+    try{
+      const recipient=normalizeRecipient($("recipientId").value);
+      await sendAnswer({prompt:activePrompt,answer:$("answerText").value,recipient,anonymous:$("sendAnon").checked});
+      closeModal();toast("sent. thanks for keeping it real ❤️");
+    }catch(e){toast(e.message||"Couldn't send. Check your connection.");}
+    finally{btn.disabled=false;}
+  };
+  $("saveDraft").onclick=()=>{
+    if(!activePrompt)return;localStorage.setItem("bht_unfiltered_draft",JSON.stringify({prompt:activePrompt,answer:$("answerText").value,recipient:$("recipientId").value}));
+    toast("Draft saved on this device.");
+  };
+  $("sendCustom").onclick=async()=>{
+    const btn=$("sendCustom");btn.disabled=true;
+    try{
+      const recipient=normalizeRecipient($("targetLink").value);
+      await sendAnswer({prompt:{id:"custom",cat:"custom",q:$("customPrompt").value.trim()},answer:$("customPrompt").value,recipient,anonymous:$("anonymousSend").checked});
+      $("customPrompt").value="";$("targetLink").value="";toast("question sent ❤️");
+    }catch(e){toast(e.message||"Couldn't send. Check your connection.");}
+    finally{btn.disabled=false;}
+  };
+  $("copyLink").onclick=async()=>{
+    const link=new URL(location.href);link.searchParams.set("bht_unfiltered",inviteId());
+    try{await navigator.clipboard.writeText(link.toString());toast("Your invite link is copied.");}
+    catch{prompt("Copy your invite link:",link.toString());}
+  };
+  function showClosed(){
+    if(inboxUnsub){inboxUnsub();inboxUnsub=null;}
+    document.querySelector("main.page").innerHTML='<div class="closed"><div class="big">🫣</div><h1>Unfiltered is taking a break</h1><p>This space isn\'t available right now. Check back soon.</p><a href="./index.html">Back to BHT</a></div>';
+  }
+  function watchVisibility(){
+    db.collection("site_settings").doc("unfiltered").onSnapshot(sn=>{
+      const on=!!(sn.exists&&sn.data().visible===true);
+      try{localStorage.setItem("bht_unf_on",on?"1":"0");}catch(e){}
+      if(!on)showClosed();
+    },()=>showClosed());
+  }
+  try{const inv=new URL(location.href).searchParams.get("bht_unfiltered");if(inv&&$("targetLink"))$("targetLink").value=inv;}catch(e){}
+  renderPrompts();
+  ensureAuth().then(()=>{watchVisibility();return loadInbox();}).catch(err=>{
+    console.error(err);$("inboxState").textContent="Couldn't connect right now. Check your connection and refresh.";
+    toast("Couldn't connect to BHT right now.");
+  });
+  window.addEventListener("beforeunload",()=>{if(inboxUnsub)inboxUnsub();});
+})();
+</script>
+</body>
+</html>
