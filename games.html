@@ -1305,6 +1305,10 @@ LD.set(65,'Seating the players…');await frame();if(dead)return;
 /* ---- people with 2-bone IK arms ---- */
 const UY=V3(0,1,0),AL=1.1,rigs=[];
 const POSE={rest:[.22,.28,.32,.36,.15],flat:[0,0,0,0,0],pinch:[.55,.85,.9,.9,.55],cup:[.7,.78,.8,.8,.55],pen:[.6,.85,.9,.9,.6],sup:[.08,.1,.14,.16,.1]};
+let FAST=1;const nap=ms=>sleep(ms/FAST);
+const BKQ=(()=>{const bx=V3(1,0,0),by=V3(0,.77,-.64).normalize(),bz=V3(0,.64,.77).normalize();return new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(bx,by,bz))})();
+function bookPose(p){const u=p.u;return{pos:u.localToWorld(V3(.26,1.72+p.rise,.9+p.lean)),q:u.quaternion.clone().multiply(BKQ)}}
+function bookAt(p,y){const u=p.u,o=u.rotation.y;u.rotation.y=y;u.updateMatrixWorld(true);const r={pos:u.localToWorld(V3(.26,1.72,.9)),q:u.quaternion.clone().multiply(BKQ)};u.rotation.y=o;u.updateMatrixWorld(true);return r}
 const pose=(p,i,n)=>{p.ct[i]=POSE[n].slice()},wrapA=a=>Math.atan2(Math.sin(a),Math.cos(a));
 function atYaw(p,y,v){const u=p.u,o=u.rotation.y;u.rotation.y=y;u.updateMatrixWorld(true);const w=u.localToWorld(v.clone());u.rotation.y=o;u.updateMatrixWorld(true);return w}
 function faceYaw(p,w){const a=Math.atan2(w.x-p.u.position.x,w.z-p.u.position.z);return p.yw.x+wrapA(a-p.yw.x)}
@@ -1323,21 +1327,28 @@ function person(B,x,z,ry,rest){const u=new T.Object3D();u.position.set(x,0,z);u.
  [-.11,.11].forEach(s=>sph(.035,mat('#111'),s,2.52,.28,up));
  if(B.gl)[-.11,.11].forEach(s=>{const t=new T.Mesh(new T.TorusGeometry(.075,.012,6,16),mat('#111'));t.position.set(s,2.52,.3);up.add(t)});
  const mk=r=>{const m=new T.Mesh(new T.CylinderGeometry(r,r,1,10),su);m.castShadow=true;u.add(m);return m};
-  const HD=[0,1].map(i=>mkHand(i,sk)),arm=[0,1].map(i=>{u.add(HD[i].hg);return[mk(.1),mk(.085),HD[i].hg]});
+  const bel=box(.8,1,.4,su,0,1.1,0,up),HD=[0,1].map(i=>mkHand(i,sk)),arm=[0,1].map(i=>{u.add(HD[i].hg);return[mk(.1),mk(.085),HD[i].hg]});
  u.updateMatrixWorld(true);
- const p={u,up,lean:0,act:0,holds:[null,null],tl:V3(0,0,0),yw:V3(ry,0,0),arm,fg:HD.map(x=>x.fg),cu:[POSE.rest.slice(),POSE.rest.slice()],ct:[POSE.rest.slice(),POSE.rest.slice()],hpw:[V3(0,0,0),V3(0,0,0)],hdw:[V3(0,0,1),V3(0,0,1)],eL:[V3(0,0,0),V3(0,0,0)],hL:[V3(0,0,0),V3(0,0,0)],props:null,rest:s=>{u.updateMatrixWorld(true);return u.localToWorld(rest(s))}};
+ const p={u,up,bel,rise:0,rl:[V3(0,0,0),V3(0,0,0)],sL:[V3(0,0,0),V3(0,0,0)],wL:[V3(0,0,0),V3(0,0,0)],lean:0,act:0,holds:[null,null],tl:V3(0,0,0),yw:V3(ry,0,0),arm,fg:HD.map(x=>x.fg),cu:[POSE.rest.slice(),POSE.rest.slice()],ct:[POSE.rest.slice(),POSE.rest.slice()],hpw:[V3(0,0,0),V3(0,0,0)],hdw:[V3(0,0,1),V3(0,0,1)],eL:[V3(0,0,0),V3(0,0,0)],hL:[V3(0,0,0),V3(0,0,0)],props:null,rest:s=>{u.updateMatrixWorld(true);return u.localToWorld(rest(s))}};
  p.restAt=(s,y)=>atYaw(p,y,rest(s));p.h=[p.rest(-1),p.rest(1)];rigs.push(p);return p}
 function ik(p,dt){const u=p.u;u.updateMatrixWorld(true);const lt=p.h.map(h=>u.worldToLocal(h.clone()));
- let need=0;lt.forEach(t=>{need=Math.max(need,t.z-1.35)});need=Math.max(0,Math.min(2.2,need));p.lean+=(need-p.lean)*Math.min(1,dt*7);p.up.position.z=p.lean;
- [0,1].forEach(i=>{const s=i?1:-1,sh=V3(s*.5,1.95,p.lean),d=lt[i].clone().sub(sh),L=Math.min(d.length(),2*AL-.02),n=d.clone().normalize(),mid=sh.clone().addScaledVector(n,L/2),hh=Math.sqrt(Math.max(0,AL*AL-L*L/4)),pole=V3(s*.9,-.7,-.3);
-  pole.addScaledVector(n,-pole.dot(n)).normalize();const el=mid.addScaledVector(pole,hh),hd=sh.clone().addScaledVector(n,L);
+ let need=0;lt.forEach(t=>{need=Math.max(need,t.z-1.35)});need=Math.max(0,Math.min(2.2,need));p.lean+=(need-p.lean)*Math.min(1,dt*7);
+ /* torso must never go through the table or the pieces: when it is over them, the body rises (stretches up) */
+ let rt=0;for(const sx of[-1,1])for(const sz of[-1,1]){const w=u.localToWorld(V3(sx*.55,1.4,sz*.28+Math.max(p.lean,need)));if(Math.abs(w.x)<1.8&&Math.abs(w.z)<1.8)rt=Math.max(rt,.75);else if(Math.abs(w.x)<3.4&&Math.abs(w.z)<2.2)rt=Math.max(rt,.36)}
+ p.rise+=(rt-p.rise)*Math.min(1,dt*(rt>p.rise?16:4));p.up.position.z=p.lean;p.up.position.y=p.rise;const hb=p.rise+.08;p.bel.scale.y=hb;p.bel.position.y=1.19-hb/2;
+ [0,1].forEach(i=>{const s=i?1:-1,sh=V3(s*.5,1.95+p.rise,p.lean),d=lt[i].clone().sub(sh),L=Math.min(d.length(),2*AL-.02),n=d.clone().normalize(),mid=sh.clone().addScaledVector(n,L/2),hh=Math.sqrt(Math.max(0,AL*AL-L*L/4));
+  /* elbow: hangs down naturally, but is lifted out of the table top when needed */
+  const mkEl=py=>{const pl=V3(s*.9,py,-.3);pl.addScaledVector(n,-pl.dot(n)).normalize();return mid.clone().addScaledVector(pl,hh)};
+  let el=mkEl(-.7);for(const py of[-.3,0,.4,.9,1.6]){if(el.y>=1.55)break;el=mkEl(py)}
+  const hd=sh.clone().addScaledVector(n,L);
   const fd=hd.clone().sub(el).normalize(),hv=V3(fd.x,fd.y*.35-.22,fd.z).normalize(),wr=hd.clone().addScaledVector(hv,-.27);
-  seg(p.arm[i][0],sh,el);seg(p.arm[i][1],el,wr);
+  seg(p.arm[i][0],sh,el);seg(p.arm[i][1],el,wr);p.sL[i].copy(sh);p.wL[i].copy(wr);
   const H=p.arm[i][2];H.position.copy(hd).addScaledVector(hv,-.1);
-  const bx=V3(0,1,0).cross(hv);if(bx.lengthSq()<1e-4)bx.set(1,0,0);bx.normalize();const by=hv.clone().cross(bx);
+  let bx=V3(0,1,0).cross(hv);if(bx.lengthSq()<1e-4)bx.set(1,0,0);bx.normalize();let by=hv.clone().cross(bx);
+  const rr=p.rl[i].x;if(rr){const c=Math.cos(rr),s2=Math.sin(rr),bx2=bx.clone().multiplyScalar(c).addScaledVector(by,s2),by2=by.clone().multiplyScalar(c).addScaledVector(bx,-s2);bx=bx2;by=by2}
   H.quaternion.setFromRotationMatrix(new T.Matrix4().makeBasis(bx,by,hv));
   p.eL[i].copy(el);p.hL[i].copy(hd);p.hpw[i].copy(u.localToWorld(hd.clone()));p.hdw[i].copy(hv).applyQuaternion(u.quaternion);
-  const c=p.cu[i],t=p.ct[i],k=Math.min(1,dt*10);for(let j=0;j<5;j++)c[j]+=(t[j]-c[j])*k;
+  const c=p.cu[i],tg=p.ct[i],k=Math.min(1,dt*10);for(let j=0;j<5;j++)c[j]+=(tg[j]-c[j])*k;
   const f=p.fg[i],tx=i?-1:1;for(let m=0;m<4;m++)f[m].forEach((sg,j)=>sg.rotation.x=c[m]*[.9,1.1,.8][j]);f[4].forEach(sg=>{sg.rotation.x=c[4]*.45;sg.rotation.y=-tx*c[4]*.55})})}
 const tbl=sg=>s=>V3(s*.55,(TY+.12)/KP,1.0);
 const PLY={suit:'#1d4f7a',hair:'#2a1b10',skin:'#d9a77d',gl:0};
@@ -1370,54 +1381,60 @@ function hl(){hlg.clear();if(!sel)return;const d=(q,c,r,o)=>{const m=new T.Mesh(
 /* ---- tweens, hands, actions ---- */
 const tw=[];const go=(v,to,d)=>new Promise(r=>tw.push({v,f:v.clone(),t:to.clone(),d,e:0,r}));
 async function doMove(m,after){busy=true;const pl=m.color=='w'?PL:BOT,o=at[m.from],a=sp(m.from),b=sp(m.to),hi=BY+1;
- while(pl.act)await sleep(120);pl.act=1;
+ while(pl.act){FAST=4;await sleep(40)}pl.act=1;
  const hI=(pl.u.worldToLocal(a.clone()).x+pl.u.worldToLocal(b.clone()).x)/2>.25?1:0,oI=1-hI,h=pl.h[hI];
  pose(pl,hI,'flat');if(!pl.holds[oI]){pose(pl,oI,'rest');go(pl.h[oI],pl.rest(oI?1:-1),.5)}
- await go(h,a.clone().setY(hi),.5);await go(h,a.clone().setY(BY+.3),.25);pose(pl,hI,'pinch');await sleep(110);pl.holds[hI]={o,off:.28,kind:'piece'};tone(520);
+ await go(h,a.clone().setY(hi),.5);await go(h,a.clone().setY(BY+.3),.25);pose(pl,hI,'pinch');await nap(110);pl.holds[hI]={o,off:.28,kind:'piece'};tone(520);
  delete at[m.from];await go(h,a.clone().setY(hi),.25);await go(h,b.clone().setY(hi),.55);
  if(m.flags.includes('e')){const cq=m.to[0]+m.from[1];pcs.remove(at[cq]);delete at[cq]}else if(at[m.to])pcs.remove(at[m.to]);
  at[m.to]=o;o.userData.sq=m.to;await go(h,b.clone().setY(BY+.3),.25);pose(pl,hI,'flat');pl.holds[hI]=null;o.position.copy(b);tone(380);
  if(m.flags.includes('k')||m.flags.includes('q')){const rk=m.color=='w'?'1':'8',[a2,b2]=m.flags.includes('k')?['h','f']:['a','d'],ro=at[a2+rk];delete at[a2+rk];at[b2+rk]=ro;ro.userData.sq=b2+rk;go(ro.position,sp(b2+rk),.4)}
  if(m.promotion){pcs.remove(o);put(m.to,m.promotion,m.color)}
  pl.act=0;busy=false;pose(pl,hI,'rest');go(h,pl.rest(hI?1:-1),.6);after&&after()}
-/* the notebook lies on the left forearm */
-function bookArm(p){const el=p.eL[1],hd=p.hL[1],ax=hd.clone().sub(el).normalize(),bx=V3(0,1,0).cross(ax).normalize(),by=ax.clone().cross(bx),pos=el.clone().lerp(hd,.55).addScaledVector(by,.11);
- const ql=new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(bx,by,ax));return{pos:p.u.localToWorld(pos),q:p.u.quaternion.clone().multiply(ql)}}
+/* notebook is held in front of the chest on the left hand (palm up), tilted toward the writer */
 function holdUpd(p){[0,1].forEach(i=>{const H=p.holds[i];if(!H)return;const o=H.o,hw=p.hpw[i];
- if(H.kind=='book'){const A=bookArm(p),k=H.kv.x;o.position.set(hw.x,hw.y-H.off,hw.z).lerp(A.pos,k);o.quaternion.copy(H.q0).slerp(A.q,k)}
+ if(H.kind=='book'){const A=bookPose(p),k=H.kv.x;o.position.set(hw.x,hw.y-H.off,hw.z).lerp(A.pos,k);o.quaternion.copy(H.q0).slerp(A.q,k)}
  else if(H.kind=='pen'){const d=p.hdw[i].clone().add(V3(0,-.35,0)).normalize(),q=new T.Quaternion().setFromUnitVectors(UY,d);o.position.copy(H.p0).lerp(hw.clone().addScaledVector(d,.1),H.kv.x);o.quaternion.copy(H.q0).slerp(q,H.kv.x)}
  else if(H.kind=='cup'){o.position.set(hw.x,hw.y-H.off,hw.z);const q=new T.Quaternion().setFromAxisAngle(UY,p.yw.x);q.multiply(new T.Quaternion().setFromAxisAngle(V3(1,0,0),-p.tl.x));q.multiply(new T.Quaternion().setFromAxisAngle(UY,-H.y0));o.quaternion.copy(q)}
  else o.position.set(hw.x,hw.y-H.off,hw.z)})}
-/* drink: the whole character turns toward the cup if it is far, takes it with the RIGHT hand (cup only), brings it back, sips, then returns it */
-async function sip(p,prop,grip){if(p.act||dead)return;p.act=1;
+/* drink: turn toward the cup if far, take ONLY the cup with the right hand, bring it to the mouth, one sip, put it back */
+async function sip(p,prop,grip){if(p.act||dead)return;p.act=1;FAST=Math.max(FAST,1.5);
  const home=prop.userData.home,y0=p.yw.x,lt=p.u.worldToLocal(home.clone()),far=Math.hypot(lt.x+.5,lt.z)>1.3,fy=far?faceYaw(p,home):y0,R=p.h[0],L=p.h[1],up=y=>home.clone().setY(TY+grip+y);
- if(far)await Promise.all([go(p.yw,V3(fy,0,0),.8),go(R,p.restAt(-1,fy),.8),go(L,p.restAt(1,fy),.8)]);
- pose(p,0,'flat');await go(R,up(.5),.5);await go(R,up(0),.25);pose(p,0,'cup');await sleep(180);
- p.holds[0]={o:prop,off:grip,kind:'cup',y0:p.yw.x};await go(R,up(.5),.3);
+ if(far)await Promise.all([go(p.yw,V3(fy,0,0),.7),go(R,p.restAt(-1,fy),.7),go(L,p.restAt(1,fy),.7)]);
+ pose(p,0,'flat');await go(R,up(.5),.4);await go(R,up(0),.2);pose(p,0,'cup');await nap(150);
+ p.holds[0]={o:prop,off:grip,kind:'cup',y0:p.yw.x};await go(R,up(.5),.25);
  const mo=atYaw(p,y0,V3(-.12,2.3,.5));
- await Promise.all([go(p.yw,V3(y0,0,0),far?.9:.7),go(R,mo,.9),go(L,p.restAt(1,y0),.9)]);
- for(let k=0;k<2;k++){await go(p.tl,V3(.55,0,0),.4);tone(700);await sleep(650);await go(p.tl,V3(0,0,0),.35);await sleep(250)}
- await Promise.all([go(p.yw,V3(fy,0,0),far?.9:.7),go(R,up(.5),.9),go(L,p.restAt(1,fy),.9)]);
- await go(R,up(0),.3);pose(p,0,'flat');await sleep(120);p.holds[0]=null;prop.position.copy(home);prop.quaternion.identity();await go(R,up(.5),.3);
- await Promise.all([go(p.yw,V3(y0,0,0),.8),go(R,p.restAt(-1,y0),.8),go(L,p.restAt(1,y0),.8)]);
+ await Promise.all([go(p.yw,V3(y0,0,0),far?.8:.6),go(R,mo,.8),go(L,p.restAt(1,y0),.8)]);
+ await go(p.tl,V3(.55,0,0),.35);tone(700);await nap(450);await go(p.tl,V3(0,0,0),.3);await nap(120);
+ await Promise.all([go(p.yw,V3(fy,0,0),far?.8:.6),go(R,up(.5),.8),go(L,p.restAt(1,fy),.8)]);
+ await go(R,up(0),.25);pose(p,0,'flat');await nap(100);p.holds[0]=null;prop.position.copy(home);prop.quaternion.identity();await go(R,up(.5),.25);
+ await Promise.all([go(p.yw,V3(y0,0,0),.7),go(R,p.restAt(-1,y0),.7),go(L,p.restAt(1,y0),.7)]);
  pose(p,0,'rest');p.act=0}
-/* notes: left hand takes the notebook and rests it on the left forearm, right hand writes with the pen, then both are put back */
-async function note(p){if(p.act||dead)return;p.act=1;
+/* notes: take the notebook (left) and the pen (right) from the table, turn back, hold the notebook palm-up in front of the chest, write, then put both back */
+async function note(p){if(p.act||dead)return;p.act=1;FAST=Math.max(FAST,1.5);
  const pr=p.props,bk=pr.notes,bh=bk.userData.home,ph=pr.pen.userData.home,y0=p.yw.x,fy=faceYaw(p,bh),R=p.h[0],L=p.h[1];
- await Promise.all([go(p.yw,V3(fy,0,0),.8),go(R,p.restAt(-1,fy),.8),go(L,p.restAt(1,fy),.8)]);
- pose(p,1,'flat');await go(L,bh.clone().setY(TY+.5),.5);await go(L,bh.clone().setY(TY+.16),.25);pose(p,1,'cup');await sleep(180);
- const H={o:bk,off:.12,kind:'book',kv:V3(0,0,0),q0:bk.quaternion.clone()};p.holds[1]=H;await go(L,bh.clone().setY(TY+.6),.4);
- pose(p,1,'sup');await Promise.all([go(L,atYaw(p,fy,V3(.42,1.9,.95)),.8),go(H.kv,V3(1,0,0),.8)]);
- pose(p,0,'flat');await go(R,ph.clone().setY(TY+.45),.5);await go(R,ph.clone().setY(TY+.1),.25);pose(p,0,'pen');await sleep(150);
- const P={o:pr.pen,kind:'pen',kv:V3(0,0,0),q0:pr.pen.quaternion.clone(),p0:pr.pen.position.clone()};p.holds[0]=P;await go(P.kv,V3(1,0,0),.3);await go(R,ph.clone().setY(TY+.5),.3);
+ await Promise.all([go(p.yw,V3(fy,0,0),.7),go(R,p.restAt(-1,fy),.7),go(L,p.restAt(1,fy),.7)]);
+ pose(p,1,'flat');await go(L,bh.clone().setY(TY+.5),.4);await go(L,bh.clone().setY(TY+.16),.2);pose(p,1,'cup');await nap(150);
+ const H={o:bk,off:.12,kind:'book',kv:V3(0,0,0),q0:bk.quaternion.clone()};p.holds[1]=H;await go(L,bh.clone().setY(TY+.55),.3);
+ pose(p,0,'flat');await go(R,ph.clone().setY(TY+.45),.4);await go(R,ph.clone().setY(TY+.1),.2);pose(p,0,'pen');await nap(130);
+ const P={o:pr.pen,kind:'pen',kv:V3(0,0,0),q0:pr.pen.quaternion.clone(),p0:pr.pen.position.clone()};p.holds[0]=P;await go(P.kv,V3(1,0,0),.25);await go(R,ph.clone().setY(TY+.5),.25);
+ /* final book pose (in front of the chest) -> where the hands must go */
+ const A=bookAt(p,y0),tmp=new T.Object3D();tmp.position.copy(A.pos);tmp.quaternion.copy(A.q);tmp.updateMatrixWorld(true);
+ const fw=V3(Math.sin(y0),0,Math.cos(y0)),dd0=fw.clone().multiplyScalar(.9).add(V3(0,-.4,0)).normalize();
+ const pg=(x,z)=>tmp.localToWorld(V3(x,.045,z)),LH=atYaw(p,y0,V3(.26,1.64,.96));
+ pose(p,1,'sup');
+ await Promise.all([go(p.yw,V3(y0,0,0),.9),go(L,LH,.9),go(p.rl[1],V3(Math.PI,0,0),.9),go(H.kv,V3(1,0,0),.9),go(R,pg(-.18,-.1).addScaledVector(dd0,-.325).add(V3(0,.12,0)),.9)]);
+ /* write on the page: the pen tip is placed on the page whatever the hand direction is */
  const tg=(x,z)=>{bk.updateMatrixWorld(true);const dd=p.hdw[0].clone().add(V3(0,-.35,0)).normalize();return bk.localToWorld(V3(x,.045,z)).addScaledVector(dd,-.325)};
- await sleep(80);await go(R,tg(-.18,-.1).add(V3(0,.1,0)),.5);await go(R,tg(-.18,-.1),.25);await go(R,tg(-.18,-.1),.1);let prev=null;
- for(let i=0;i<16;i++){const x=-.18+(i%8)*.05+Math.random()*.01,z=-.1+(i>>3)*.14+Math.random()*.01;await go(R,tg(x,z),.2);if(prev&&i%8)pr.ink.add(V3(prev[0],.042,prev[1]),V3(x,.042,z));prev=[x,z]}
- await go(R,ph.clone().setY(TY+.5),.5);await Promise.all([go(R,ph.clone().setY(TY+.1),.3),go(P.kv,V3(0,0,0),.3)]);pose(p,0,'flat');await sleep(100);
- p.holds[0]=null;pr.pen.position.copy(P.p0);pr.pen.quaternion.copy(P.q0);await go(R,ph.clone().setY(TY+.45),.3);
- await Promise.all([go(L,bh.clone().setY(TY+.6),.7),go(H.kv,V3(0,0,0),.7)]);await go(L,bh.clone().setY(TY+.16),.3);pose(p,1,'flat');await sleep(120);
- p.holds[1]=null;bk.position.copy(bh);bk.quaternion.copy(H.q0);await go(L,bh.clone().setY(TY+.5),.3);
- await Promise.all([go(p.yw,V3(y0,0,0),.8),go(R,p.restAt(-1,y0),.8),go(L,p.restAt(1,y0),.8)]);
+ await go(R,tg(-.18,-.08),.3);await go(R,tg(-.18,-.08),.1);let prev=null;
+ for(let i=0;i<12;i++){const x=-.18+(i%6)*.07+Math.random()*.01,z=-.08+(i/6|0)*.13+Math.random()*.01;await go(R,tg(x,z),.17);if(prev&&i%6)pr.ink.add(V3(prev[0],.042,prev[1]),V3(x,.042,z));prev=[x,z]}
+ await go(R,tg(0,.06).add(V3(0,.12,0)),.25);
+ /* turn back to the table: pen and notebook go back where they were */
+ await Promise.all([go(p.yw,V3(fy,0,0),.9),go(L,bh.clone().setY(TY+.55),.9),go(p.rl[1],V3(0,0,0),.9),go(H.kv,V3(0,0,0),.9),go(R,ph.clone().setY(TY+.5),.9)]);
+ await Promise.all([go(R,ph.clone().setY(TY+.1),.25),go(P.kv,V3(0,0,0),.25),go(L,bh.clone().setY(TY+.16),.3)]);pose(p,0,'flat');pose(p,1,'flat');await nap(110);
+ p.holds[0]=null;pr.pen.position.copy(P.p0);pr.pen.quaternion.copy(P.q0);p.holds[1]=null;bk.position.copy(bh);bk.quaternion.copy(H.q0);
+ await Promise.all([go(R,ph.clone().setY(TY+.45),.3),go(L,bh.clone().setY(TY+.5),.3)]);
+ await Promise.all([go(p.yw,V3(y0,0,0),.7),go(R,p.restAt(-1,y0),.7),go(L,p.restAt(1,y0),.7)]);
  pose(p,0,'rest');pose(p,1,'rest');p.act=0}
 const act={w:p=>sip(p,p.props.water,.15),c:p=>sip(p,p.props.coffee,.07),n:p=>note(p)};
 /* ---- game flow ---- */
@@ -1431,9 +1448,9 @@ function ab(d,a,b,mx){if(g.in_checkmate())return mx?-1e5-d:1e5+d;if(g.in_draw())
  const ms=g.moves({verbose:true}).sort((x,y)=>(y.captured?1:0)-(x.captured?1:0));let v=mx?-1e9:1e9;
  for(const m of ms){g.move({from:m.from,to:m.to,promotion:m.promotion});const s=ab(d-1,a,b,!mx);g.undo();if(mx){v=Math.max(v,s);a=Math.max(a,v)}else{v=Math.min(v,s);b=Math.min(b,v)}if(b<=a)break}return v}
 function pick(){const D=BOTS[bi].d;let best,bv=1e9;g.moves({verbose:true}).forEach(m=>{g.move({from:m.from,to:m.to,promotion:m.promotion});const v=ab(D-1,-1e9,1e9,true)+Math.random()*(D==1?60:4);g.undo();if(v<bv){bv=v;best=m}});return{from:best.from,to:best.to,promotion:best.promotion||'q'}}
-async function bot(){if(over||g.game_over())return;busy=true;const B=BOT;while(B.act)await sleep(120);B.act=1;
+async function bot(){if(over||g.game_over())return;busy=true;const B=BOT;while(B.act){FAST=4;await sleep(40)}B.act=1;
  await go(B.h[0],B.u.localToWorld(V3(-.15,2.2,.8+B.lean)),.6);await sleep(250);const mv=pick();B.act=0;const r=g.move(mv);await doMove(r,status)}
-function click(q){if(busy||over||PL.act||menuOn||g.turn()!='w')return;
+function click(q){if(PL.act&&!menuOn&&!over)FAST=4;if(busy||over||PL.act||menuOn||g.turn()!='w')return;
  if(sel){const m=g.moves({square:sel,verbose:true}).find(x=>x.to==q);if(m){const r=g.move({from:sel,to:q,promotion:'q'});sel=null;hl();status();doMove(r,()=>{status();bot()});return}}
  const p=g.get(q);sel=p&&p.color=='w'?q:null;hl()}
 function reset(){if(busy)return;g.reset();sel=null;over=false;scored=false;hl();sync();status()}
@@ -1470,9 +1487,9 @@ setBot(bi);sync();status();LD.set(92,'Welcoming your opponent…');showMenu();
 let last=performance.now();const L=t=>{if(dead)return;rafId=requestAnimationFrame(L);const dt=Math.min(.05,(t-last)/1000);last=t;
  if(menuOn)O.th+=dt*.12;else if(CF.tour)O.th+=dt*.3;
  if(O.go!=null){const w=((O.th+Math.PI)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)-Math.PI;O.th=w+(O.go-w)*Math.min(1,dt*3);if(Math.abs(O.go-w)<.003)O.go=null}
- for(let i=tw.length-1;i>=0;i--){const w=tw[i];w.e+=dt;const k=Math.min(1,w.e/w.d),s=k*k*(3-2*k);w.v.lerpVectors(w.f,w.t,s);if(k>=1){tw.splice(i,1);w.r()}}
- rigs.forEach(p=>{p.u.rotation.y=p.yw.x;ik(p,dt);holdUpd(p)});
- idleT-=dt;if(idleT<0){idleT=18+Math.random()*20;if(CF.idle&&!menuOn&&!busy&&!over&&g.turn()=='w'&&!BOT.act){const k=['w','c','n'][Math.random()*3|0];act[k](BOT)}}
+ for(let i=tw.length-1;i>=0;i--){const w=tw[i];w.e+=dt*FAST;const k=Math.min(1,w.e/w.d),s=k*k*(3-2*k);w.v.lerpVectors(w.f,w.t,s);if(k>=1){tw.splice(i,1);w.r()}}
+ rigs.forEach(p=>{p.u.rotation.y=p.yw.x;ik(p,dt);holdUpd(p)});if(!PL.act&&!BOT.act)FAST=1;
+ idleT-=dt;if(idleT<0){idleT=30+Math.random()*30;if(CF.idle&&!menuOn&&!busy&&!over&&g.turn()=='w'&&!BOT.act){const k=['w','c','n'][Math.random()*3|0];act[k](BOT)}}
  cp();R.render(S,cam)};rafId=requestAnimationFrame(L);
 clean=()=>{dead=1;cancelAnimationFrame(rafId);ro.disconnect();R.dispose();try{R.forceContextLoss()}catch(e){}};
 if(dead)clean();
